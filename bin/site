@@ -1,0 +1,25 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Genera il sito statico in _site/ dai dati approvati (storico abbonamenti e
+# Indice Margherita). data/pending/ non viene mai pubblicato.
+#
+#   bin/site            # scrive _site/index.html
+
+require_relative "../lib/price_monitor"
+
+template = File.read(PriceMonitor.path("site", "index.html"), encoding: "UTF-8")
+history  = File.read(PriceMonitor.path("data", "history.json"), encoding: "UTF-8")
+
+cfg = PriceMonitor::Margherita.config
+margherita = PriceMonitor::Margherita::Index
+             .new(PriceMonitor::Margherita::Store.load.reports, min_pizzerias: cfg.fetch("min_pizzerias", 3))
+             .to_site(form_url: cfg["form_url"])
+
+out_dir = PriceMonitor.path("_site")
+Dir.mkdir(out_dir) unless Dir.exist?(out_dir)
+html = PriceMonitor::Site.render(template, "HISTORY_JSON" => history,
+                                           "MARGHERITA_JSON" => JSON.generate(margherita))
+File.write(File.join(out_dir, "index.html"), html)
+
+puts "Sito generato in _site/index.html"

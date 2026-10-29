@@ -1,0 +1,779 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quanto mi costi</title>
+<meta name="description" content="Quanto aumentano i prezzi in Italia: lo storico di Netflix, Spotify e Disney+ e l'Indice Margherita, con le fonti di ogni prezzo.">
+<style>
+  :root {
+    color-scheme: light;
+    --page: #f9f9f7;
+    --surface: #fcfcfb;
+    --ink: #0b0b0b;
+    --ink-2: #52514e;
+    --muted: #898781;
+    --grid: #e1e0d9;
+    --axis: #c3c2b7;
+    --border: rgba(11, 11, 11, 0.10);
+    --link: #1c5cab;
+    --s1: #2a78d6;
+    --s2: #eb6834;
+    --s3: #1baf7a;
+    --s4: #eda100;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+      --page: #0d0d0d;
+      --surface: #1a1a19;
+      --ink: #f0efec;
+      --ink-2: #c3c2b7;
+      --muted: #898781;
+      --grid: #2c2c2a;
+      --axis: #383835;
+      --border: rgba(255, 255, 255, 0.10);
+      --link: #86b6ef;
+      --s1: #3987e5;
+      --s2: #d95926;
+      --s3: #199e70;
+      --s4: #c98500;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--ink);
+    font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  a { color: var(--link); }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 0 16px; }
+
+  header.wrap { padding-top: 48px; padding-bottom: 16px; }
+  .kicker { margin: 0; color: var(--ink-2); font-size: 14px; }
+  h1 { margin: 4px 0 8px; font-size: clamp(36px, 7vw, 56px); line-height: 1.05; letter-spacing: -0.02em; }
+  .lede { margin: 0; max-width: 60ch; color: var(--ink-2); font-size: 18px; }
+
+  main.wrap { padding-bottom: 32px; }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin: 16px 0;
+  }
+  h2 { margin: 0; font-size: 22px; line-height: 1.25; }
+  .meta { margin: 4px 0 0; color: var(--ink-2); font-size: 14px; }
+
+  /* Calcolatore */
+  .calc-grid { display: grid; gap: 24px; margin-top: 16px; }
+  @media (min-width: 720px) { .calc-grid { grid-template-columns: 5fr 6fr; align-items: start; } }
+  fieldset { border: 0; margin: 0; padding: 0; display: grid; gap: 12px; }
+  legend { padding: 0; margin-bottom: 4px; font-size: 14px; color: var(--ink-2); }
+  .field { display: grid; grid-template-columns: 96px 1fr; align-items: center; gap: 12px; font-size: 15px; }
+  select {
+    font: inherit;
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--axis);
+    border-radius: 8px;
+    padding: 8px 10px;
+    width: 100%;
+    min-width: 0;
+  }
+  .hero { margin: 0; font-size: 56px; font-weight: 600; line-height: 1.05; letter-spacing: -0.02em; }
+  .hero-sub { margin: 6px 0 16px; color: var(--ink-2); }
+
+  /* Tabelle */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  th { text-align: left; font-weight: 500; color: var(--ink-2); font-size: 13px; padding: 6px 8px 6px 0; }
+  td { padding: 8px 8px 8px 0; border-top: 1px solid var(--grid); vertical-align: baseline; }
+  th.num, td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  td.off { color: var(--muted); }
+  .sw { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; }
+  .sw.none { background: transparent; }
+
+  /* Grafici */
+  figure { margin: 20px 0 8px; }
+  figcaption { font-size: 14px; color: var(--ink-2); }
+  .legend { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 8px 0 4px; font-size: 14px; color: var(--ink-2); }
+  .plot { position: relative; }
+  .plot svg { display: block; width: 100%; height: auto; touch-action: pan-y; }
+  .tick { fill: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+  .endlabel { fill: var(--ink-2); font-size: 12px; font-variant-numeric: tabular-nums; }
+  .grid { stroke: var(--grid); stroke-width: 1; }
+  .axis { stroke: var(--axis); stroke-width: 1; }
+  .cross { stroke: var(--axis); stroke-width: 1; }
+  .line { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  .dot { stroke: var(--surface); stroke-width: 2; }
+  .tip {
+    position: absolute;
+    top: 0;
+    pointer-events: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    padding: 8px 10px;
+    font-size: 13px;
+    min-width: 180px;
+  }
+  .tip[hidden] { display: none; }
+  .tip-date { color: var(--ink-2); margin-bottom: 4px; }
+  .tip-row { display: flex; align-items: center; gap: 0; }
+  .tip-row .val { margin-left: auto; padding-left: 12px; font-variant-numeric: tabular-nums; }
+
+  /* Storico eventi */
+  details { margin-top: 16px; }
+  summary { cursor: pointer; color: var(--link); font-size: 15px; }
+  ol.events { list-style: none; margin: 8px 0 0; padding: 0; }
+  ol.events li { border-top: 1px solid var(--grid); padding: 12px 0; }
+  .ev-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+  .ev-date { font-weight: 600; }
+  .pill { font-size: 12px; color: var(--ink-2); border: 1px solid var(--axis); border-radius: 999px; padding: 0 8px; }
+  ul.changes { margin: 6px 0; padding-left: 18px; font-variant-numeric: tabular-nums; }
+  .ev-note, .ev-src { margin: 4px 0 0; font-size: 14px; color: var(--ink-2); }
+  .ev-src a { margin-right: 10px; overflow-wrap: anywhere; }
+
+  /* Navigazione e titoli di sezione */
+  nav.wrap { display: flex; flex-wrap: wrap; gap: 8px; padding-bottom: 8px; }
+  nav a {
+    font-size: 15px; text-decoration: none; color: var(--ink);
+    border: 1px solid var(--axis); border-radius: 999px; padding: 4px 14px;
+  }
+  nav a:hover { background: var(--grid); }
+  .part { margin: 40px 0 0; font-size: 28px; line-height: 1.2; letter-spacing: -0.01em; }
+  .part-lede { margin: 4px 0 0; color: var(--ink-2); max-width: 60ch; }
+
+  /* Indice Margherita */
+  .cta {
+    display: inline-block; margin-top: 12px; padding: 10px 18px; border-radius: 8px;
+    background: var(--ink); color: var(--page); text-decoration: none; font-weight: 600;
+  }
+  .empty { margin: 16px 0 0; color: var(--ink-2); max-width: 60ch; }
+  .note { margin: 16px 0 0; font-size: 14px; color: var(--ink-2); max-width: 70ch; }
+
+  footer.wrap { padding-bottom: 48px; color: var(--ink-2); font-size: 14px; }
+  footer h2 { font-size: 16px; color: var(--ink); margin-bottom: 4px; }
+  footer p { margin: 0 0 8px; max-width: 70ch; }
+
+  @media (max-width: 600px) {
+    .card { padding: 16px; }
+    .hero { font-size: 48px; }
+    .field { grid-template-columns: 80px 1fr; }
+  }
+</style>
+</head>
+<body>
+<header class="wrap">
+  <p class="kicker">Prezzi in Italia</p>
+  <h1>Quanto mi costi</h1>
+  <p class="lede">Quanto sono aumentati gli abbonamenti digitali e la pizza margherita in Italia. Ogni prezzo ha una data e almeno una fonte.</p>
+</header>
+
+<nav class="wrap" aria-label="Sezioni">
+  <a href="#abbonamenti">Abbonamenti</a>
+  <a href="#margherita">Indice Margherita</a>
+</nav>
+
+<main class="wrap">
+  <h2 class="part" id="abbonamenti">Abbonamenti digitali</h2>
+  <p class="part-lede">Netflix, Spotify e Disney+ da quando sono arrivati in Italia.</p>
+
+  <section class="card" aria-labelledby="calc-title">
+    <h2 id="calc-title">Quanto paghi in più</h2>
+    <p class="meta">Scegli i tuoi abbonamenti e una data: confronto i prezzi di listino di allora con quelli di oggi.</p>
+    <div class="calc-grid">
+      <form id="calc-form" onsubmit="return false">
+        <fieldset id="calc-plans"><legend>I tuoi abbonamenti</legend></fieldset>
+        <fieldset style="margin-top:16px">
+          <legend>Rispetto a quando</legend>
+          <label class="field"><span>Dal</span><select id="calc-since"></select></label>
+        </fieldset>
+      </form>
+      <div aria-live="polite">
+        <p class="hero" id="calc-hero"></p>
+        <p class="hero-sub" id="calc-sub"></p>
+        <div class="table-wrap"><table id="calc-lines"></table></div>
+      </div>
+    </div>
+  </section>
+
+  <div id="services"></div>
+
+  <h2 class="part" id="margherita">Indice Margherita</h2>
+  <p class="part-lede">Quanto costa una pizza margherita al tavolo, città per città e mese per mese. I prezzi arrivano da chi la mangia.</p>
+
+  <section class="card" aria-label="Prezzo della margherita per città">
+    <div id="pizza"></div>
+    <p class="note">Prezzo tipico = mediana dei prezzi del mese, contando una volta sola ogni pizzeria. Una città compare quando nello stesso mese ci sono almeno <span id="pizza-min">3</span> pizzerie diverse. Ogni segnalazione ha una foto del menu o dello scontrino ed è controllata a mano prima di entrare nell'indice. Non usiamo i dati delle app di consegna a domicilio.</p>
+  </section>
+</main>
+
+<footer class="wrap">
+  <h2>Come sono raccolti i dati</h2>
+  <p><strong>Abbonamenti.</strong> I prezzi sono quelli di listino mensili per i nuovi abbonati, in euro. Chi è già abbonato di solito riceve il rincaro qualche settimana dopo: quando la data è nota è indicata nello storico. Le pagine prezzi ufficiali vengono lette ogni giorno da un programma che cerca i prezzi con regole fisse, senza intelligenza artificiale. Ogni variazione viene controllata da una persona ed entra nello storico solo con almeno una fonte. Offerte e promozioni a tempo non sono considerate.</p>
+  <p><strong>Indice Margherita.</strong> Segnalazioni di persone che hanno visto il prezzo nel menu o sullo scontrino, con foto. Le foto servono solo al controllo e non vengono pubblicate.</p>
+  <p id="updated"></p>
+</footer>
+
+<script type="application/json" id="history"><!-- HISTORY_JSON --></script>
+<script type="application/json" id="margherita-data"><!-- MARGHERITA_JSON --></script>
+<script>
+(function () {
+  "use strict";
+
+  var H;
+  try {
+    H = JSON.parse(document.getElementById("history").textContent);
+  } catch (e) {
+    document.getElementById("services").textContent =
+      "Dati mancanti: genera la pagina con bin/site invece di aprire il template.";
+    return;
+  }
+
+  var TODAY = new Date().toISOString().slice(0, 10);
+  var SVGNS = "http://www.w3.org/2000/svg";
+  var TYPES = {
+    launch: "Lancio",
+    increase: "Rincaro",
+    decrease: "Ribasso",
+    new_plan: "Nuovo piano",
+    plan_removed: "Piano ritirato",
+    restructure: "Nuovi piani"
+  };
+
+  var eurFmt = new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR" });
+  var pct0 = new Intl.NumberFormat("it-IT", { maximumFractionDigits: 0, signDisplay: "exceptZero" });
+  var pct1 = new Intl.NumberFormat("it-IT", { maximumFractionDigits: 1, signDisplay: "exceptZero" });
+  var dateLong = new Intl.DateTimeFormat("it-IT", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+  var monthYear = new Intl.DateTimeFormat("it-IT", { month: "long", year: "numeric", timeZone: "UTC" });
+
+  function eur(v) { return eurFmt.format(v); }
+  function ts(date) { return Date.parse(date + "T00:00:00Z"); }
+  // "1° gennaio", come si scrive in italiano
+  function fmtDate(date) { return dateLong.format(ts(date)).replace(/^1 /, "1° "); }
+  function round2(v) { return Math.round(v * 100) / 100; }
+
+  function h(tag, attrs, children) {
+    var n = document.createElement(tag);
+    for (var k in attrs || {}) {
+      if (k === "text") n.textContent = attrs[k];
+      else if (k === "class") n.className = attrs[k];
+      else n.setAttribute(k, attrs[k]);
+    }
+    (children || []).forEach(function (c) { if (c) n.appendChild(c); });
+    return n;
+  }
+
+  function s(tag, attrs, parent) {
+    var n = document.createElementNS(SVGNS, tag);
+    for (var k in attrs) n.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(n);
+    return n;
+  }
+
+  // ---- Stessa logica di PriceMonitor::History -------------------------------
+
+  function svc(id) { return H.services[id]; }
+
+  function events(id) {
+    return svc(id).events.slice().sort(function (a, b) {
+      return a.date < b.date ? -1 : a.date > b.date ? 1 : 0;
+    });
+  }
+
+  // Listino per i nuovi abbonati alla data: ogni evento sovrascrive i piani
+  // che nomina, null = piano non più sottoscrivibile.
+  function pricesAt(id, date) {
+    var acc = {};
+    var evs = events(id);
+    for (var i = 0; i < evs.length; i++) {
+      if (evs[i].date > date) break;
+      for (var p in evs[i].prices) {
+        if (evs[i].prices[p] === null) delete acc[p];
+        else acc[p] = evs[i].prices[p];
+      }
+    }
+    return acc;
+  }
+
+  // Esclude i piani dismessi senza una data verificata.
+  function current(id) {
+    var acc = pricesAt(id, TODAY);
+    (svc(id).discontinued_undated || []).forEach(function (p) { delete acc[p]; });
+    return acc;
+  }
+
+  function label(id, plan) { return svc(id).plans[plan] || plan; }
+
+  // Piani che compaiono almeno in un evento, nell'ordine di "plans" dello storico.
+  function allPlans(id) {
+    var seen = [];
+    events(id).forEach(function (ev) {
+      Object.keys(ev.prices).forEach(function (p) { if (seen.indexOf(p) < 0) seen.push(p); });
+    });
+    var order = Object.keys(svc(id).plans);
+    return seen.sort(function (a, b) { return order.indexOf(a) - order.indexOf(b); });
+  }
+
+  // Nel grafico solo i prezzi mensili (gli annuali sono su un'altra scala) e
+  // non i piani dismessi senza data: disegnarli fino a oggi sarebbe falso.
+  // Il colore è legato al piano, nell'ordine di "plans" dello storico.
+  function chartPlans(id) {
+    var skip = svc(id).discontinued_undated || [];
+    var used = allPlans(id);
+    return Object.keys(svc(id).plans).filter(function (p) {
+      return !/_annual$/.test(p) && skip.indexOf(p) < 0 && used.indexOf(p) >= 0;
+    });
+  }
+
+  // ---- Calcolatore (stessa logica di PriceMonitor::Calculator) --------------
+
+  var DEFAULTS = { netflix: "standard", spotify: "premium", disney_plus: "premium" };
+
+  function buildCalculator() {
+    var box = document.getElementById("calc-plans");
+    Object.keys(H.services).forEach(function (id) {
+      var sel = h("select", { "data-service": id });
+      sel.appendChild(h("option", { value: "", text: "Nessuno" }));
+      var now = current(id);
+      Object.keys(svc(id).plans).forEach(function (p) {
+        if (now[p] === undefined || /_annual$/.test(p)) return;
+        var o = h("option", { value: p, text: label(id, p) + " · " + eur(now[p]) });
+        if (DEFAULTS[id] === p) o.selected = true;
+        sel.appendChild(o);
+      });
+      box.appendChild(h("label", { class: "field" }, [h("span", { text: svc(id).name }), sel]));
+    });
+
+    var since = document.getElementById("calc-since");
+    var first = Math.min.apply(null, Object.keys(H.services).map(function (id) {
+      return +svc(id).launched_it.slice(0, 4);
+    }));
+    var last = +TODAY.slice(0, 4);
+    for (var y = last; y >= first; y--) {
+      var o = h("option", { value: y + "-01-01", text: "1° gennaio " + y });
+      if (y === 2021) o.selected = true;
+      since.appendChild(o);
+    }
+
+    document.getElementById("calc-form").addEventListener("change", updateCalculator);
+    updateCalculator();
+  }
+
+  function updateCalculator() {
+    var since = document.getElementById("calc-since").value;
+    var lines = [];
+    document.querySelectorAll("#calc-plans select").forEach(function (sel) {
+      if (!sel.value) return;
+      var id = sel.getAttribute("data-service");
+      lines.push({
+        id: id,
+        plan: sel.value,
+        then: pricesAt(id, since)[sel.value],
+        now: pricesAt(id, TODAY)[sel.value]
+      });
+    });
+
+    var comparable = lines.filter(function (l) { return l.then !== undefined && l.now !== undefined; });
+    var thenM = round2(comparable.reduce(function (a, l) { return a + l.then; }, 0));
+    var nowM = round2(comparable.reduce(function (a, l) { return a + l.now; }, 0));
+    var yearly = round2((nowM - thenM) * 12);
+
+    var hero = document.getElementById("calc-hero");
+    var sub = document.getElementById("calc-sub");
+    if (!comparable.length) {
+      hero.textContent = "—";
+      sub.textContent = lines.length
+        ? "Nessuno di questi piani esisteva a quella data."
+        : "Scegli almeno un abbonamento.";
+    } else {
+      hero.textContent = (yearly > 0 ? "+" : "") + eur(yearly);
+      sub.textContent = "all'anno rispetto al " + fmtDate(since) + ". Al mese: " +
+        eur(thenM) + " → " + eur(nowM) +
+        (thenM ? " (" + pct1.format((nowM / thenM - 1) * 100) + "%)" : "") + ".";
+    }
+
+    var table = document.getElementById("calc-lines");
+    table.textContent = "";
+    if (!lines.length) return;
+    table.appendChild(h("tr", {}, [
+      h("th", { text: "Abbonamento" }),
+      h("th", { class: "num", text: "Allora" }),
+      h("th", { class: "num", text: "Oggi" })
+    ]));
+    lines.forEach(function (l) {
+      var missing = l.then === undefined;
+      table.appendChild(h("tr", {}, [
+        h("td", { text: svc(l.id).name + " " + label(l.id, l.plan) }),
+        h("td", { class: "num" + (missing ? " off" : ""), text: missing ? "non c'era" : eur(l.then) }),
+        h("td", { class: "num", text: l.now === undefined ? "—" : eur(l.now) })
+      ]));
+    });
+    if (lines.length > comparable.length) {
+      table.appendChild(h("tr", {}, [h("td", {
+        colspan: "3", class: "off",
+        text: "I piani che non esistevano a quella data non entrano nel conto."
+      })]));
+    }
+  }
+
+  // ---- Sezione per servizio --------------------------------------------------
+
+  function buildService(id) {
+    var data = svc(id);
+    var evs = events(id);
+    var lastUp = evs.filter(function (e) { return e.type === "increase" || e.type === "restructure"; }).pop();
+    var plotted = chartPlans(id);
+
+    var section = h("section", { class: "card", id: id, "aria-labelledby": id + "-title" });
+    section.appendChild(h("h2", { id: id + "-title", text: data.name }));
+    section.appendChild(h("p", {
+      class: "meta",
+      text: "In Italia dal " + fmtDate(data.launched_it) +
+        (lastUp ? " · ultimo rincaro il " + fmtDate(lastUp.date) : "")
+    }));
+
+    // Grafico
+    var legend = h("div", { class: "legend" });
+    plotted.forEach(function (p, i) {
+      legend.appendChild(h("span", {}, [
+        h("span", { class: "sw", style: "background:var(--s" + (i + 1) + ")" }),
+        document.createTextNode(label(id, p))
+      ]));
+    });
+    var plot = h("div", { class: "plot" });
+    section.appendChild(h("figure", {}, [
+      h("figcaption", { text: "Prezzo mensile per i nuovi abbonati" }),
+      legend,
+      plot
+    ]));
+    drawChart(plot, id, plotted);
+
+    // Tabella listino: dal lancio a oggi, anche annuali e piani dismessi
+    var now = current(id);
+    var undated = data.discontinued_undated || [];
+    var table = h("table", {}, [h("tr", {}, [
+      h("th", { text: "Piano" }),
+      h("th", { class: "num", text: "Al lancio" }),
+      h("th", { class: "num", text: "Oggi" }),
+      h("th", { class: "num", text: "Variazione" })
+    ])]);
+    allPlans(id).forEach(function (p) {
+      var firstEv = evs.filter(function (e) { return typeof e.prices[p] === "number"; })[0];
+      var launch = firstEv.prices[p];
+      var nowP = now[p];
+      var idx = plotted.indexOf(p);
+      var sw = h("span", {
+        class: "sw" + (idx < 0 ? " none" : ""),
+        style: idx < 0 ? "" : "background:var(--s" + (idx + 1) + ")"
+      });
+      var nowText, deltaText;
+      if (nowP !== undefined) {
+        nowText = eur(nowP);
+        deltaText = pct0.format((nowP / launch - 1) * 100) + "%";
+      } else {
+        nowText = undated.indexOf(p) >= 0 ? "dismesso (data da verificare)" : "non più disponibile";
+        deltaText = "";
+      }
+      table.appendChild(h("tr", {}, [
+        h("td", {}, [sw, document.createTextNode(label(id, p))]),
+        h("td", { class: "num", text: eur(launch) }),
+        h("td", { class: "num" + (nowP === undefined ? " off" : ""), text: nowText }),
+        h("td", { class: "num", text: deltaText })
+      ]));
+    });
+    section.appendChild(h("div", { class: "table-wrap" }, [table]));
+
+    // Storico variazioni con fonti, dalla più recente
+    var acc = {};
+    var items = evs.map(function (ev) {
+      var changes = h("ul", { class: "changes" });
+      Object.keys(ev.prices).forEach(function (p) {
+        var before = acc[p];
+        var after = ev.prices[p];
+        var text = label(id, p) + ": " +
+          (before !== undefined && after !== null ? eur(before) + " → " : "") +
+          (after === null ? "non più sottoscrivibile dai nuovi abbonati" : eur(after));
+        changes.appendChild(h("li", { text: text }));
+        if (after === null) delete acc[p]; else acc[p] = after;
+      });
+
+      var li = h("li", {}, [
+        h("div", { class: "ev-head" }, [
+          h("span", { class: "ev-date", text: fmtDate(ev.date) }),
+          h("span", { class: "pill", text: TYPES[ev.type] || ev.type })
+        ]),
+        changes
+      ]);
+      if (ev.existing_from) {
+        li.appendChild(h("p", { class: "ev-note", text: "Per chi era già abbonato: dal " + fmtDate(ev.existing_from) + "." }));
+      }
+      if (ev.note) li.appendChild(h("p", { class: "ev-note", text: ev.note }));
+
+      var src = h("p", { class: "ev-src" }, [document.createTextNode("Fonti: ")]);
+      (ev.sources || []).forEach(function (url) {
+        if (!/^https?:\/\//.test(url)) return;
+        var host = url.replace(/^https?:\/\/(www\.)?/, "").split("/")[0];
+        src.appendChild(h("a", { href: url, target: "_blank", rel: "noopener", text: host }));
+      });
+      li.appendChild(src);
+      return li;
+    }).reverse();
+
+    section.appendChild(h("details", {}, [
+      h("summary", { text: "Tutte le variazioni (" + evs.length + ") con le fonti" }),
+      h("ol", { class: "events" }, items)
+    ]));
+
+    return section;
+  }
+
+  // ---- Grafico a gradini con tooltip ----------------------------------------
+
+  // Segmenti a gradino di un piano: il prezzo resta fermo fino all'evento
+  // successivo; null chiude il segmento (piano ritirato).
+  function steps(id, plan) {
+    var segs = [];
+    var cur = null;
+    events(id).forEach(function (ev) {
+      if (!(plan in ev.prices)) return;
+      var t = ts(ev.date);
+      var v = ev.prices[plan];
+      if (cur) cur.push({ t: t, v: cur[cur.length - 1].v });
+      if (v === null) {
+        if (cur) segs.push(cur);
+        cur = null;
+      } else {
+        cur = cur || [];
+        cur.push({ t: t, v: v });
+      }
+    });
+    if (cur) {
+      cur.push({ t: ts(TODAY), v: cur[cur.length - 1].v, live: true });
+      segs.push(cur);
+    }
+    return segs;
+  }
+
+  function drawChart(plot, id, plans) {
+    var series = plans.map(function (p) { return steps(id, p); });
+    var x0 = ts(svc(id).launched_it);
+    var x1 = ts(TODAY);
+    var maxV = Math.max.apply(null, series.map(function (segs) {
+      return Math.max.apply(null, segs.map(function (seg) {
+        return Math.max.apply(null, seg.map(function (d) { return d.v; }));
+      }));
+    }));
+    var yMax = Math.ceil((maxV * 1.08) / 5) * 5;
+    var lastW = 0;
+
+    var tip = h("div", { class: "tip", hidden: "" });
+
+    function render() {
+      var W = Math.round(plot.clientWidth);
+      if (!W || W === lastW) return;
+      lastW = W;
+      plot.textContent = "";
+
+      var Ht = W < 560 ? 220 : 260;
+      var m = { t: 12, r: 60, b: 28, l: 40 };
+      var iw = W - m.l - m.r;
+      var ih = Ht - m.t - m.b;
+      function X(t) { return m.l + ((t - x0) / (x1 - x0)) * iw; }
+      function Y(v) { return m.t + (1 - v / yMax) * ih; }
+
+      var svg = s("svg", {
+        viewBox: "0 0 " + W + " " + Ht, width: W, height: Ht, role: "img",
+        "aria-label": "Prezzo mensile dei piani " + svc(id).name +
+          " dal lancio a oggi. I valori sono nella tabella sotto il grafico."
+      });
+
+      for (var v = 0; v <= yMax; v += 5) {
+        s("line", { x1: m.l, x2: W - m.r, y1: Y(v), y2: Y(v), class: v === 0 ? "axis" : "grid" }, svg);
+        s("text", { x: m.l - 6, y: Y(v) + 4, "text-anchor": "end", class: "tick" }, svg).textContent = v + " €";
+      }
+
+      var y0 = new Date(x0).getUTCFullYear() + 1;
+      var yN = new Date(x1).getUTCFullYear();
+      var perYear = iw / ((x1 - x0) / 31557600000);
+      var stepY = [1, 2, 3, 5].filter(function (k) { return perYear * k >= 44; })[0] || 5;
+      for (var yr = y0; yr <= yN; yr++) {
+        if ((yr - y0) % stepY) continue;
+        var tx = X(Date.UTC(yr, 0, 1));
+        s("text", { x: tx, y: Ht - 8, "text-anchor": "middle", class: "tick" }, svg).textContent = yr;
+      }
+
+      var ends = [];
+      series.forEach(function (segs, i) {
+        var color = "var(--s" + (i + 1) + ")";
+        segs.forEach(function (seg) {
+          var d = seg.map(function (pt, j) {
+            return (j ? "L" : "M") + X(pt.t).toFixed(1) + " " + Y(pt.v).toFixed(1);
+          }).join("");
+          s("path", { d: d, class: "line", style: "stroke:" + color }, svg);
+        });
+        segs.forEach(function (seg) {
+          var last = seg[seg.length - 1];
+          s("circle", { cx: X(last.t), cy: Y(last.v), r: 4, class: "dot", style: "fill:" + color }, svg);
+          if (last.live) ends.push({ y: Y(last.v), v: last.v });
+        });
+      });
+
+      // Valori a fine linea, solo se non si sovrappongono: altrimenti legenda e tooltip
+      ends.sort(function (a, b) { return a.y - b.y; });
+      var fits = ends.every(function (e, k) { return !k || e.y - ends[k - 1].y >= 14; });
+      if (fits) {
+        ends.forEach(function (e) {
+          s("text", { x: W - m.r + 10, y: e.y + 4, class: "endlabel" }, svg).textContent = eur(e.v);
+        });
+      }
+
+      var cross = s("line", { y1: m.t, y2: Ht - m.b, class: "cross", visibility: "hidden" }, svg);
+      var marks = plans.map(function (p, i) {
+        return s("circle", { r: 4, class: "dot", visibility: "hidden", style: "fill:var(--s" + (i + 1) + ")" }, svg);
+      });
+      var hit = s("rect", { x: m.l, y: 0, width: iw, height: Ht, fill: "transparent" }, svg);
+
+      function hide() {
+        cross.setAttribute("visibility", "hidden");
+        marks.forEach(function (mk) { mk.setAttribute("visibility", "hidden"); });
+        tip.hidden = true;
+      }
+
+      function move(ev) {
+        var r = svg.getBoundingClientRect();
+        var px = ((ev.clientX - r.left) * W) / r.width;
+        var t = Math.min(x1, Math.max(x0, x0 + ((px - m.l) / iw) * (x1 - x0)));
+        var date = new Date(t).toISOString().slice(0, 10);
+        var at = pricesAt(id, date);
+        var cx = X(t);
+
+        cross.setAttribute("x1", cx);
+        cross.setAttribute("x2", cx);
+        cross.setAttribute("visibility", "visible");
+
+        var rows = [];
+        plans.forEach(function (p, i) {
+          if (at[p] === undefined) {
+            marks[i].setAttribute("visibility", "hidden");
+            return;
+          }
+          marks[i].setAttribute("cx", cx);
+          marks[i].setAttribute("cy", Y(at[p]));
+          marks[i].setAttribute("visibility", "visible");
+          rows.push({ p: p, i: i, v: at[p] });
+        });
+        rows.sort(function (a, b) { return b.v - a.v; });
+
+        tip.textContent = "";
+        tip.appendChild(h("div", { class: "tip-date", text: monthYear.format(t) }));
+        rows.forEach(function (row) {
+          tip.appendChild(h("div", { class: "tip-row" }, [
+            h("span", { class: "sw", style: "background:var(--s" + (row.i + 1) + ")" }),
+            h("span", { text: label(id, row.p) }),
+            h("span", { class: "val", text: eur(row.v) })
+          ]));
+        });
+        tip.hidden = false;
+
+        var cssX = (cx * r.width) / W;
+        var tw = tip.offsetWidth;
+        var left = cssX > r.width / 2 ? cssX - tw - 12 : cssX + 12;
+        tip.style.left = Math.max(0, Math.min(r.width - tw, left)) + "px";
+      }
+
+      hit.addEventListener("pointermove", move);
+      hit.addEventListener("pointerdown", move);
+      hit.addEventListener("pointerleave", hide);
+
+      plot.appendChild(svg);
+      plot.appendChild(tip);
+    }
+
+    render();
+    if (window.ResizeObserver) new ResizeObserver(render).observe(plot);
+    else window.addEventListener("resize", render);
+  }
+
+  // ---- Indice Margherita (calcolato da PriceMonitor::Margherita::Index) ------
+
+  function monthName(month) { return monthYear.format(ts(month + "-01")); }
+
+  function buildPizza() {
+    var M;
+    try {
+      M = JSON.parse(document.getElementById("margherita-data").textContent);
+    } catch (e) {
+      return;
+    }
+    var box = document.getElementById("pizza");
+    document.getElementById("pizza-min").textContent = M.min_pizzerias;
+
+    var cta = M.form_url
+      ? h("a", { class: "cta", href: M.form_url, target: "_blank", rel: "noopener", text: "Segnala un prezzo" })
+      : h("p", { class: "meta", text: "Il modulo per le segnalazioni arriva a breve." });
+
+    if (!M.national && !M.cities.length) {
+      box.appendChild(h("h3", { class: "hero", style: "font-size:32px", text: "Stiamo raccogliendo i primi prezzi" }));
+      box.appendChild(h("p", {
+        class: "empty",
+        text: M.reports
+          ? "Finora " + M.reports + (M.reports === 1 ? " segnalazione" : " segnalazioni") +
+            ": servono almeno " + M.min_pizzerias + " pizzerie nella stessa città e nello stesso mese per pubblicare un prezzo."
+          : "Hai mangiato una margherita di recente? Segnala quanto l'hai pagata, con una foto del menu o dello scontrino."
+      }));
+      box.appendChild(cta);
+      return;
+    }
+
+    if (M.national) {
+      box.appendChild(h("p", { class: "hero", text: eur(M.national.median) }));
+      box.appendChild(h("p", {
+        class: "hero-sub",
+        text: "prezzo tipico di una margherita in Italia, " + monthName(M.national.month) +
+          " (" + M.national.pizzerias + " pizzerie)."
+      }));
+    }
+
+    if (M.cities.length) {
+      var table = h("table", {}, [h("tr", {}, [
+        h("th", { text: "Città" }),
+        h("th", { class: "num", text: "Prezzo tipico" }),
+        h("th", { text: "Mese" }),
+        h("th", { class: "num", text: "Pizzerie" }),
+        h("th", { class: "num", text: "In un anno" })
+      ])]);
+      M.cities.forEach(function (c) {
+        table.appendChild(h("tr", {}, [
+          h("td", { text: c.city }),
+          h("td", { class: "num", text: eur(c.median) }),
+          h("td", { text: monthName(c.month) }),
+          h("td", { class: "num", text: String(c.pizzerias) }),
+          h("td", {
+            class: "num" + (c.year_ago ? "" : " off"),
+            text: c.year_ago ? pct0.format((c.median / c.year_ago - 1) * 100) + "%" : "—"
+          })
+        ]));
+      });
+      box.appendChild(h("div", { class: "table-wrap" }, [table]));
+    }
+    box.appendChild(cta);
+  }
+
+  // ---- Avvio ------------------------------------------------------------------
+
+  var box = document.getElementById("services");
+  Object.keys(H.services).forEach(function (id) { box.appendChild(buildService(id)); });
+  buildCalculator();
+  buildPizza();
+  document.getElementById("updated").textContent =
+    "Dati aggiornati al " + fmtDate(H.meta.updated_at) + ".";
+})();
+</script>
+</body>
+</html>

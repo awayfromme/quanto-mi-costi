@@ -6,6 +6,7 @@
 # fonti, una nota, la data "existing_from" per i già abbonati.
 #
 #   bin/approve netflix-2026-11-02.json
+#   bin/approve margherita-2026-11-02.json   # segnalazioni dell'Indice Margherita
 
 require_relative "../lib/price_monitor"
 
@@ -14,6 +15,15 @@ path = File.exist?(file) ? file : PriceMonitor.path("data", "pending", file)
 abort "Non trovo #{path}" unless File.exist?(path)
 
 proposal = JSON.parse(File.read(path, encoding: "UTF-8"))
+
+if proposal["dataset"] == "margherita"
+  reports = proposal.fetch("reports")
+  PriceMonitor::Margherita::Store.load.append_reports!(reports)
+  puts "Indice Margherita: #{reports.size} segnalazioni approvate"
+  File.delete(path)
+  exit
+end
+
 service  = proposal.delete("service")
 history  = PriceMonitor::History.load
 

@@ -1,0 +1,58 @@
+# Pubblica il sito su GitHub Pages quando cambiano i dati approvati o il sito.
+# Gira sui runner di GitHub: non legge pagine prezzi, quindi l'IP non conta.
+
+name: sito
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - data/history.json
+      - data/margherita.json
+      - config/margherita.yml
+      - site/**
+      - lib/**
+      - bin/site
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          bundler-cache: true
+
+      - name: Test
+        run: bundle exec rake test
+
+      - name: Genera il sito
+        run: bundle exec ruby bin/site
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

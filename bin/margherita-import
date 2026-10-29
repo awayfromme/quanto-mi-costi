@@ -1,0 +1,36 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Importa l'export CSV del modulo segnalazioni dell'Indice Margherita e crea
+# una proposta in data/pending/. Niente va nei dati finché non approvi.
+#
+#   bin/margherita-import risposte.csv
+#   bin/approve margherita-2026-11-02.json
+#
+# Prima di approvare apri le foto elencate qui sotto e togli dal file pending
+# le segnalazioni che non corrispondono. Le foto non vengono salvate nel repo.
+
+require_relative "../lib/price_monitor"
+
+file = ARGV.fetch(0) { abort "Uso: bin/margherita-import <export.csv>" }
+abort "Non trovo #{file}" unless File.exist?(file)
+
+store  = PriceMonitor::Margherita::Store.load
+result = PriceMonitor::Margherita::Import.new(PriceMonitor::Margherita.config)
+                                         .call(File.read(file, encoding: "bom|utf-8"), known_ids: store.ids)
+
+result.rejected.each { |msg| puts "✗ #{msg}" }
+abort "Nessuna segnalazione nuova da importare." if result.reports.empty?
+
+today = Date.today.iso8601
+pending_path = PriceMonitor.path("data", "pending", "margherita-#{today}.json")
+abort "Esiste già #{pending_path}: approvalo o cancellalo prima." if File.exist?(pending_path)
+
+File.write(pending_path, JSON.pretty_generate({ "dataset" => "margherita", "reports" => result.reports }) + "\n")
+
+puts "\n#{result.reports.size} segnalazioni da controllare:"
+result.reports.each do |r|
+  puts format("  %-10s %-16s %-28s %5.2f €  %s", r["date"], r["city"], r["pizzeria"], r["price"],
+              result.photos[r["id"]])
+end
+puts "\nControlla le foto, poi: bin/approve #{File.basename(pending_path)}"

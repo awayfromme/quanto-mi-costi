@@ -1,0 +1,13 @@
+{
+  "meta": {
+    "country": "IT",
+    "currency": "EUR",
+    "updated_at": "2026-10-29",
+    "notes": [
+      "Prezzo di una pizza margherita al tavolo, segnalato da utenti con foto del menu o dello scontrino e controllato a mano.",
+      "Le foto restano nel modulo: 'sources' indica la risposta del modulo da cui viene la segnalazione.",
+      "Si modifica solo tramite bin/approve."
+    ]
+  },
+  "reports": []
+}

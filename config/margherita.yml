@@ -1,0 +1,23 @@
+# Indice Margherita: segnalazioni degli utenti tramite un modulo esterno
+# (Tally, Google Moduli...). Mai dati presi dalle app di delivery.
+
+# Link pubblico al modulo, mostrato sul sito. Vuoto = "modulo in arrivo".
+form_url: ""
+
+# Una città entra nell'indice in un mese solo con almeno questo numero di
+# pizzerie diverse: con meno, un solo prezzo strano farebbe il titolo.
+min_pizzerias: 3
+
+# Intervallo plausibile in euro per una margherita al tavolo.
+min: 2
+max: 25
+
+# Intestazioni delle colonne nell'export CSV del modulo. Se rinomini una
+# domanda nel modulo, aggiorna qui.
+columns:
+  id: "Submission ID"        # Google Moduli: "Informazioni cronologiche"
+  date: "Data"               # quando hai visto il prezzo (gg/mm/aaaa o aaaa-mm-gg)
+  city: "Città"
+  pizzeria: "Pizzeria"
+  price: "Prezzo"
+  photo: "Foto"              # foto del menu o dello scontrino (obbligatoria)

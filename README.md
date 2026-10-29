@@ -1,7 +1,10 @@
 # Quanto mi costi
 
 Storico dei prezzi degli abbonamenti digitali in Italia, con un monitor che
-si accorge da solo dei rincari.
+si accorge da solo dei rincari, e l'**Indice Margherita**: il prezzo tipico
+della pizza margherita città per città, dalle segnalazioni degli utenti.
+
+Sito: https://awayfromme.github.io/quanto-mi-costi/
 
 ## Cosa c'è
 
@@ -12,6 +15,10 @@ si accorge da solo dei rincari.
 | `bin/monitor` | Giro giornaliero: legge le pagine, salva il testo, propone le variazioni. |
 | `bin/approve` | Sposta una variazione proposta dentro lo storico (revisione umana). |
 | `bin/report` | Listino attuale, rincari dal lancio, calcolatore "quanto paghi in più". |
+| `bin/site` | Genera il sito statico in `_site/` da `site/index.html` + i dati approvati. |
+| `data/margherita.json` | Segnalazioni approvate dell'Indice Margherita. |
+| `config/margherita.yml` | Link al modulo, soglia di pizzerie, colonne dell'export CSV. |
+| `bin/margherita-import` | Trasforma l'export CSV del modulo in una proposta in `data/pending/`. |
 
 ## Come funziona
 
@@ -30,7 +37,7 @@ si accorge da solo dei rincari.
 
 ```sh
 bundle install
-bundle exec rake test                     # 19 test, nessun browser necessario
+bundle exec rake test                     # 21 test, nessun browser necessario
 bin/report
 bin/report --since 2019-01-01 netflix:standard spotify:premium
 bin/monitor --from-file netflix test/fixtures/netflix.txt   # prova a secco
@@ -38,6 +45,27 @@ bin/monitor                               # giro vero: serve Chrome e un IP ital
 ```
 
 Per le notifiche: `TELEGRAM_BOT_TOKEN` e `TELEGRAM_CHAT_ID`.
+
+## Indice Margherita
+
+1. Crea un modulo (Tally o Google Moduli) con le domande **Data**, **Città**,
+   **Pizzeria**, **Prezzo** e **Foto** (caricamento file, obbligatorio).
+   Metti il link in `config/margherita.yml` → `form_url`; se i nomi delle
+   colonne dell'export sono diversi, aggiornali lì.
+2. Esporta le risposte in CSV e lancia `bin/margherita-import risposte.csv`.
+   Le righe incomplete vengono scartate con il motivo; per le altre stampa
+   il link alla foto da controllare.
+3. Togli dal file in `data/pending/` quello che non torna, poi
+   `bin/approve margherita-<data>.json` e push: il sito si aggiorna da solo.
+
+Prezzo tipico = mediana del mese, una segnalazione per pizzeria. Una città
+compare con almeno 3 pizzerie nello stesso mese. Le foto non entrano nel
+repo: è pubblico.
+
+## Sito
+
+`bin/site` genera `_site/index.html`. Il workflow `sito` lo pubblica su
+GitHub Pages a ogni push che tocca dati approvati o sito.
 
 ## Da sapere prima di andare in produzione
 
