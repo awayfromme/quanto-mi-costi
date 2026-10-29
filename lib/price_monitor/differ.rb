@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module PriceMonitor
-  # Confronta i prezzi appena letti con il listino attuale dello storico.
-  # Considera solo i piani che il monitor sa leggere (quelli in config):
-  # i piani annuali o storici presenti solo nello storico vengono ignorati.
+  # Mette a cunfronto 'e prezze appena liggiute cu 'o listino 'e mo' dint' 'o storico.
+  # Appunì: cunta sulo 'e piane ca 'o monitor sape leggere (chille d' 'a config),
+  # 'e piane annuale o viecchie ca stanno sulo dint' 'o storico nun se cuntano.
   class Differ
     Change = Struct.new(:plan, :old_price, :new_price, keyword_init: true) do
       def kind
@@ -25,7 +25,7 @@ module PriceMonitor
     def call(current, observed)
       @watched.filter_map do |plan|
         new_price = observed[plan]
-        next if new_price.nil?                       # non letto: già segnalato dall'Extractor
+        next if new_price.nil?                       # nun liggiuto: l'Extractor l'ha già sgammato
 
         old_price = current[plan]
         next if old_price && (old_price - new_price).abs < 0.005

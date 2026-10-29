@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module PriceMonitor
-  # Lo storico è una lista di eventi per servizio. Il listino in una certa data
-  # si ottiene "piegando" gli eventi fino a quella data: ogni evento sovrascrive
-  # i prezzi dei piani che nomina, null = piano non più sottoscrivibile.
+  # 'O storico è na lista d'evente pe' ogni servizio. 'O listino a na certa data
+  # s'ottene "piegando" 'e evente fino a chella data: ogni evento se scrive
+  # ncopp' 'e prezze d' 'e piane ca nomina, null = piano ca nun se pò cchiù fà.
   class History
     attr_reader :data
 
@@ -24,7 +24,7 @@ module PriceMonitor
       service(id).fetch("events").sort_by { |e| e.fetch("date") }
     end
 
-    # Listino attivo per i nuovi abbonati alla data indicata.
+    # 'O listino pe' chi s'abbona nuovo â data ca se dice.
     def prices_at(id, date = Date.today)
       date = Date.parse(date.to_s)
       events(id).each_with_object({}) do |ev, acc|
@@ -36,8 +36,8 @@ module PriceMonitor
       end
     end
 
-    # Listino di oggi. Esclude i piani che sappiamo dismessi ma senza una data
-    # verificata (es. Spotify Unlimited): meglio un buco che un prezzo falso.
+    # 'O listino 'e mo'. Lassa fore 'e piane ca sapimmo ca so' fernute ma senza
+    # na data sicura (es. Spotify Unlimited): meglio nu pertuso ca nu prezzo fauzo.
     def current(id)
       prices_at(id, Date.today).except(*service(id).fetch("discontinued_undated", []))
     end

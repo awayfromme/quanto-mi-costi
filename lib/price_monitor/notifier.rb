@@ -4,8 +4,8 @@ require "net/http"
 require "uri"
 
 module PriceMonitor
-  # Telegram se TELEGRAM_BOT_TOKEN e TELEGRAM_CHAT_ID sono impostati,
-  # altrimenti stampa su stdout (comodo in locale e nei log di CI).
+  # Telegram si TELEGRAM_BOT_TOKEN e TELEGRAM_CHAT_ID stanno mise,
+  # sinnò stampa ncopp' a stdout (comodo 'n locale e dint' 'e log d' 'a CI).
   class Notifier
     def initialize(token: ENV["TELEGRAM_BOT_TOKEN"], chat_id: ENV["TELEGRAM_CHAT_ID"], io: $stdout)
       @token = token

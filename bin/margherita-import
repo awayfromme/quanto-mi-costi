@@ -1,14 +1,14 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-# Importa l'export CSV del modulo segnalazioni dell'Indice Margherita e crea
-# una proposta in data/pending/. Niente va nei dati finché non approvi.
+# Piglia l'export CSV d' 'o modulo d' 'e segnalaziune 'e ll'Indice Margherita
+# e fa na proposta dint' a data/pending/. Niente trase dint' 'e date si nun appruve.
 #
 #   bin/margherita-import risposte.csv
 #   bin/approve margherita-2026-11-02.json
 #
-# Prima di approvare apri le foto elencate qui sotto e togli dal file pending
-# le segnalazioni che non corrispondono. Le foto non vengono salvate nel repo.
+# Primma 'e appruvà, appunì 'e foto ca te stampa ccà sotto e leva d' 'o file
+# pending 'e segnalaziune ca nun tornano. 'E foto nun se stipano dint' 'o repo.
 
 require_relative "../lib/price_monitor"
 

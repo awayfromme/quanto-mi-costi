@@ -47,8 +47,8 @@ class ExtractorTest < Minitest::Test
     assert_equal 3, result.errors.size
   end
 
-  # Testo vero delle pagine in config/services.yml, letto da IP italiano il
-  # 2026-10-29: i prezzi estratti devono coincidere con lo storico a quella data.
+  # Testo overo d' 'e paggene 'e config/services.yml, liggiuto da IP italiano 'o
+  # 2026-10-29: 'e prezze ca escono hann' 'a essere chille d' 'o storico a chella data.
   %w[netflix spotify disney_plus].each do |name|
     define_method("test_real_#{name}_page_matches_history") do
       text = File.read(File.join(FIXTURES, "#{name}_reale.txt"))
@@ -196,8 +196,8 @@ class MargheritaTest < Minitest::Test
       report("1", "Napoli", "Da Michele", 5.0),
       report("2", "Napoli", "Sorbillo", 6.0),
       report("3", "Napoli", "Concettina", 7.0),
-      report("4", "Napoli", "da michele", 30.0, "2026-10-01"), # stessa pizzeria, segnalazione più vecchia
-      report("5", "Milano", "Spontini", 9.0)                    # una sola pizzeria: non basta
+      report("4", "Napoli", "da michele", 30.0, "2026-10-01"), # stessa pizzeria, segnalazione cchiù vecchia
+      report("5", "Milano", "Spontini", 9.0)                    # na pizzeria sola: nun abbasta
     ]
     monthly = PriceMonitor::Margherita::Index.new(reports, min_pizzerias: 3).monthly
 
@@ -273,7 +273,7 @@ class CalculatorTest < Minitest::Test
                      since: Date.new(2019, 1, 1), today: Date.new(2026, 10, 29))
 
     # 2019-01-01: Netflix Standard 10,99 + Spotify 9,99 = 20,98
-    # oggi:       13,99 + 11,99 = 25,98  → +5 €/mese, +60 €/anno
+    # mo':        13,99 + 11,99 = 25,98  → +5 €/mese, +60 €/anno
     assert_equal 20.98, r[:monthly_then]
     assert_equal 25.98, r[:monthly_now]
     assert_equal 60.0, r[:yearly_delta]

@@ -1,15 +1,15 @@
-# Giro giornaliero del monitor prezzi, con "git scraping": ogni cambio
-# di testo nelle pagine o nei file pending diventa un commit.
+# 'O giro 'e ogni juorno d' 'o monitor d' 'e prezze, cu 'o "git scraping": ogni
+# cagnamento 'e testo dint' 'e paggene o dint' 'e file pending addiventa nu commit.
 #
-# ⚠️ I runner di GitHub sono negli USA e vedrebbero i prezzi americani.
-# Serve un runner self-hosted con IP italiano (una VPS in Italia o il tuo
-# homelab) registrato con l'etichetta "italy".
+# ⚠️ Appunì: 'e runner 'e GitHub stanno 'n America e vedessero 'e prezze americane.
+# Ce vo' nu runner self-hosted cu n'IP italiano (na VPS in Italia o 'o homelab
+# tuojo) registrato cu ll'etichetta "italy".
 
 name: monitor-prezzi
 
 on:
   schedule:
-    - cron: "17 6 * * *"   # ogni giorno alle 6:17 UTC (minuto non tondo per evitare la coda)
+    - cron: "17 6 * * *"   # ogni juorno ê 6:17 UTC (minuto stuorto pe' nun fà 'a fila)
   workflow_dispatch:
 
 permissions:
@@ -32,7 +32,7 @@ jobs:
 
       - name: Monitor
         run: bundle exec bin/monitor
-        continue-on-error: true   # un sito giù non deve bloccare il commit degli altri
+        continue-on-error: true   # si nu sito è caduto, nun ha da fermà 'o commit 'e ll'ate
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}

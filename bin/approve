@@ -1,12 +1,12 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-# Sposta una variazione proposta da data/pending/ dentro lo storico.
-# Prima di approvare puoi modificare a mano il file pending: aggiungere
-# fonti, una nota, la data "existing_from" per i già abbonati.
+# Sposta na variazione proposta da data/pending/ dint' 'o storico.
+# Primma 'e appruvà puoje cagnà a mano 'o file pending: azzeccà
+# fonte, na nota, 'a data "existing_from" pe' chi era già abbonato.
 #
 #   bin/approve netflix-2026-11-02.json
-#   bin/approve margherita-2026-11-02.json   # segnalazioni dell'Indice Margherita
+#   bin/approve margherita-2026-11-02.json   # segnalaziune 'e ll'Indice Margherita
 #
 # Appunì: nu pending cu "amend" nun crea n'evento nuovo, azzecca sulo fonte
 # (e si vuò na nota nova) a ll'evento ca tene già chella data.

@@ -1,13 +1,13 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-# Giro giornaliero: per ogni servizio legge la pagina prezzi, salva il testo
-# (git scraping: il diff nel repo mostra cosa è cambiato), confronta con lo
-# storico e, se trova una variazione, crea una proposta in data/pending/
-# e ti avvisa. Lo storico NON viene toccato finché non approvi.
+# 'O giro 'e ogni juorno: pe' ogni servizio legge 'a paggena d' 'e prezze, se
+# stipa 'o testo (git scraping: 'o diff dint' 'o repo fa vedé che è cagnato),
+# 'o cunfronta cu 'o storico e, si sgamma na variazione, fa na proposta
+# dint' a data/pending/ e t'avvisa. 'O storico NUN se tocca fino a che nun appruve tu.
 #
-#   bin/monitor                 # tutti i servizi
-#   bin/monitor netflix spotify # solo alcuni
+#   bin/monitor                 # tutte 'e servizie
+#   bin/monitor netflix spotify # sulo cocched'uno
 #   bin/monitor --from-file netflix test/fixtures/netflix.txt  # senza browser
 
 require_relative "../lib/price_monitor"

@@ -36,6 +36,16 @@ Pages dal workflow `sito`. Vedi README.md.
    esempio" in `data/`: sul sito sembrerebbero veri (i dati finti stanno
    solo nei test).
 
+## Commenti nel codice
+
+**Tutti i commenti nel codice vanno scritti in parlesia** (la lingua dei
+musicisti napoletani), in tutto il repo: Ruby, YAML, workflow, CSS e
+JavaScript del sito, test. Dove manca una parola di parlesia si usa il
+napoletano. Restano come sono solo le righe tecniche (`#!/usr/bin/env ruby`,
+`# frozen_string_literal: true`). Non sono commenti, quindi restano in
+italiano: i messaggi stampati dagli script, i testi del sito, le note nei
+dati, README e questo file.
+
 ## Come lavorare
 
 - Test: `bundle exec rake test` (nessun browser). Devono passare prima di ogni commit.

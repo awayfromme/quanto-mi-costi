@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-# Riepilogo dello storico e prova del calcolatore "Quanto mi costi".
+# Riepilogo d' 'o storico e prova d' 'o calcolatore "Quanto mi costi".
 #
-#   bin/report                         # listino attuale + rincari dal lancio
+#   bin/report                         # listino 'e mo' + rincare d' 'o lancio
 #   bin/report --since 2019-01-01 netflix:standard spotify:premium disney_plus:premium
 
 require_relative "../lib/price_monitor"
@@ -32,7 +32,7 @@ history.services.each do |id|
 
   puts "\n#{svc['name']} (in Italia dal #{Date.parse(svc['launched_it']).strftime('%d/%m/%Y')})"
   plans.each do |plan|
-    # prezzo con cui il piano è comparso la prima volta in Italia
+    # 'o prezzo cu cui 'o piano è asciuto 'a primma vota in Italia
     launch = history.events(id).find { |e| e["prices"][plan] }["prices"][plan]
     current = now[plan]
     label = history.label(id, plan)

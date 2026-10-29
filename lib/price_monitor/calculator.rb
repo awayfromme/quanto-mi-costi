@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module PriceMonitor
-  # Il cuore di "Quanto mi costi": dato un elenco di abbonamenti
-  # (servizio + piano) dice quanto costano oggi e quanto costavano a una
-  # data passata, e quanto paghi in più all'anno.
+  # 'O core 'e "Quanto mi costi": dato n'elenco d'abbonamente
+  # (servizio + piano) te dice quanto costano mo', quanto costavano
+  # a na data 'e primma, e quanto cacce 'e cchiù ogn'anno.
   class Calculator
     Line = Struct.new(:service, :plan, :then_price, :now_price, keyword_init: true)
 
@@ -12,8 +12,8 @@ module PriceMonitor
     end
 
     # subs: [["netflix", "standard"], ["spotify", "premium"]]
-    # Se un piano non esisteva alla data `since`, then_price resta nil
-    # e quella riga non entra nel confronto.
+    # Si nu piano nun ce steva â data `since`, then_price resta nil
+    # e chella riga nun trase dint' 'o cunfronto.
     def compare(subs, since:, today: Date.today)
       lines = subs.map do |service, plan|
         Line.new(

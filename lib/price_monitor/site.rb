@@ -1,17 +1,17 @@
 # frozen_string_literal: true
 
 module PriceMonitor
-  # Il sito è una pagina statica: il template in site/index.html con i dati
-  # incorporati, così si apre anche da file e si pubblica su qualunque hosting.
+  # 'O sito è na paggena ferma: 'o template 'e site/index.html cu 'e date
+  # 'a dinto, accussì s'arape pure da file e se mette ncopp' a qualunque hosting.
   module Site
     # render(template, "HISTORY_JSON" => json, "MARGHERITA_JSON" => json)
-    # sostituisce ogni segnaposto <!-- NOME --> con il JSON corrispondente.
+    # mette ô posto 'e ogni segnaposto <!-- NOME --> 'o JSON ca lle spetta.
     def self.render(template, data)
       data.reduce(template) do |html, (name, json)|
         placeholder = "<!-- #{name} -->"
         raise "Segnaposto #{placeholder} non trovato nel template" unless html.include?(placeholder)
 
-        # "</" dentro un <script> chiuderebbe il tag: lo si scrive "<\/", che in JSON è identico
+        # Appunì: "</" dint' a nu <script> chiudarria 'o tag; se scrive "<\/", ca pe' JSON è 'a stessa cosa
         compact = JSON.generate(JSON.parse(json)).gsub("</", "<\\/")
         html.sub(placeholder) { compact }
       end

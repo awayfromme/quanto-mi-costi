@@ -1,16 +1,16 @@
-# Pagine da monitorare e come riconoscere ogni piano nel testo della pagina.
+# 'E paggene da tené d'uocchio e comme se riconosce ogni piano dint' 'o testo.
 #
-# match:    regex (case-insensitive) che identifica la riga col nome del piano
-# exclude:  regex opzionale: se la riga la contiene, NON è questo piano
-#           (serve a distinguere "Standard" da "Standard con pubblicità")
-# lookahead: quante righe dopo il nome cercare il prezzo (default 6)
-# min/max:  intervallo plausibile in euro; fuori range = estrazione sospetta
+# match:    regex (maiuscole o minuscole è uguale) ca trova 'a riga cu 'o nomme d' 'o piano
+# exclude:  regex si vuò: si 'a riga 'a tene, NUN è chistu piano
+#           (serve pe' nun mmescà "Standard" cu "Standard con pubblicità")
+# lookahead: quante righe doppo 'o nomme se cerca 'o prezzo (si nun dice niente, 6)
+# min/max:  'o prezzo ca se pò credere, in euro; fora 'e chisto = estrazione ca puzza
 #
-# ⚠️ Gli URL vanno verificati da un IP italiano prima di andare in produzione:
-#    i siti cambiano spesso la struttura delle pagine prezzi.
+# ⚠️ Appunì: ll'URL s'hanno 'a cuntrullà da n'IP italiano primma 'e jì in produzione:
+#    'e site cagnano spisso comme so' fatte 'e paggene d' 'e prezze.
 
 netflix:
-  url: https://help.netflix.com/it/node/24926   # pagina di aiuto "Piani e prezzi"
+  url: https://help.netflix.com/it/node/24926   # paggena d'aiuto "Piani e prezzi"
   wait_for: body
   plans:
     base_ads:
@@ -48,10 +48,10 @@ spotify:
       min: 3
       max: 12
 
-# Pagina d'aiuto "Piani e prezzi", non la home: la home mostra i prezzi
-# promozionali con vincolo di 6 mesi ("A partire da ...") prima del listino.
-# Le regex sono ancorate a fine riga perché in fondo alla pagina ci sono righe
-# "Disney+ Standard: 6,99 € al mese" che non sono il listino.
+# Paggena d'aiuto "Piani e prezzi", no 'a home: 'a home mette nnanze 'e prezze
+# 'e offerta cu 'o vincolo 'e 6 mise ("A partire da ...") primma d' 'o listino.
+# 'E regex so' attaccate â fine d' 'a riga pecché abbascio â paggena ce stanno
+# righe "Disney+ Standard: 6,99 € al mese" ca nun so' 'o listino.
 disney_plus:
   url: https://help.disneyplus.com/it/article/disneyplus-price
   wait_for: body

@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 module PriceMonitor
-  # Estrae i prezzi dal TESTO di una pagina (non dall'HTML), così un restyling
-  # che cambia classi CSS non rompe nulla: conta solo cosa legge l'utente.
+  # Caccia 'e prezze d' 'o TESTO 'e na paggena (no d' 'o HTML), accussì si
+  # cagnano 'e classe CSS nun se rompe niente: conta sulo chello ca legge 'a gente.
   #
-  # Per ogni piano cerca la prima riga che corrisponde a `match` (e non a
-  # `exclude`), poi il primo prezzo in euro su quella riga o nelle successive.
+  # Pe' ogni piano cerca 'a primma riga ca piglia `match` (e no `exclude`),
+  # po' 'o primmo prezzo in euro ncopp' a chella riga o a chelle 'e sotto.
   class Extractor
     # "6,99 €", "€ 6,99", "6.99€", "EUR 6,99"
     PRICE_RE = /(?:€|EUR)\s*(\d{1,3}[.,]\d{2})|(\d{1,3}[.,]\d{2})\s*(?:€|EUR)/i
@@ -40,8 +40,8 @@ module PriceMonitor
     private
 
     def normalize(text)
-      text = text.dup.force_encoding(Encoding::UTF_8)   # file letti con locale ASCII
-      text.scrub.gsub(" ", " ")           # spazi non separabili, frequenti nei prezzi
+      text = text.dup.force_encoding(Encoding::UTF_8)   # file liggiute cu 'o locale ASCII
+      text.scrub.gsub(" ", " ")           # spazie ca nun se spartono, se trovano spisso dint' 'e prezze
           .lines.map(&:strip).reject(&:empty?)
     end
 

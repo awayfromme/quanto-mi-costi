@@ -3,8 +3,8 @@
 require "csv"
 
 module PriceMonitor
-  # Indice Margherita: prezzo tipico della pizza margherita per città e mese,
-  # dalle segnalazioni degli utenti approvate a mano. Mai dalle app di delivery.
+  # Indice Margherita: 'o prezzo 'e na margherita pe' città e pe' mese, d' 'e
+  # segnalaziune d' 'a gente appruvate a mano. Maje d' 'e app d' 'e consegne.
   module Margherita
     NATIONAL = "Italia"
 
@@ -12,13 +12,13 @@ module PriceMonitor
       YAML.safe_load_file(PriceMonitor.path("config", "margherita.yml"))
     end
 
-    # La stessa pizzeria scritta in modi diversi conta una volta sola.
+    # 'A stessa pizzeria scritta 'n modo diverso se conta na vota sola.
     def self.pizzeria_key(report)
       [report["city"], report["pizzeria"]].map { |s| s.downcase.squeeze(" ").strip }.join("|")
     end
 
-    # data/margherita.json: le segnalazioni approvate. Come lo storico degli
-    # abbonamenti, si modifica solo con bin/approve.
+    # data/margherita.json: 'e segnalaziune appruvate. Comme 'o storico
+    # d' 'e abbonamente, se tocca sulo cu bin/approve.
     class Store
       attr_reader :data
 
@@ -55,17 +55,17 @@ module PriceMonitor
       end
     end
 
-    # Per ogni città e mese: mediana dei prezzi, con una sola segnalazione per
-    # pizzeria (la più recente del mese). La mediana regge meglio della media
-    # a un prezzo sbagliato. Un mese conta solo con almeno `min_pizzerias`
-    # pizzerie diverse; "Italia" mette insieme tutte le città.
+    # Pe' ogni città e mese: 'a mediana d' 'e prezze, cu na segnalazione sola
+    # pe' pizzeria ('a cchiù fresca d' 'o mese). 'A mediana regge meglio d' 'a
+    # media quanno arriva nu prezzo sbagliato. Nu mese conta sulo cu almeno
+    # `min_pizzerias` pizzerie diverse; "Italia" mette nzieme tutte 'e città.
     class Index
       def initialize(reports, min_pizzerias: 3)
         @reports = reports
         @min = min_pizzerias
       end
 
-      # { "Napoli" => { "2026-10" => { "median" => 6.5, "pizzerias" => 4 } } }
+      # Esce accussì: { "Napoli" => { "2026-10" => { "median" => 6.5, "pizzerias" => 4 } } }
       def monthly
         groups = Hash.new { |h, k| h[k] = {} }
         @reports.sort_by { |r| r["date"] }.each do |r|
@@ -82,8 +82,8 @@ module PriceMonitor
         end.transform_values { |months| months.sort.to_h }
       end
 
-      # Ultimo mese valido di ogni città e confronto con lo stesso mese
-      # dell'anno prima, se anche quello è valido.
+      # L'urdemo mese buono 'e ogni città e 'o cunfronto cu 'o stesso mese
+      # 'e ll'anno primma, si pure chillo è buono.
       def latest
         monthly.to_h do |city, months|
           month, cur = months.max_by(&:first)
@@ -94,8 +94,8 @@ module PriceMonitor
         end
       end
 
-      # Il dato nazionale non ha confronto annuale: un anno fa le città
-      # coperte erano altre, e la differenza misurerebbe quello, non i prezzi.
+      # Appunì: 'o dato 'e tutta Italia nun tene cunfronto cu ll'anno primma.
+      # N'anno fa 'e città erano ate, e 'a differenza misurarria chesto, no 'e prezze.
       def to_site(form_url: "")
         rows = latest
         {
@@ -118,9 +118,9 @@ module PriceMonitor
       end
     end
 
-    # Trasforma l'export CSV del modulo in segnalazioni da rivedere. Nessuna
-    # interpretazione "furba": una riga che non torna viene scartata con il
-    # motivo, e se serve la si corregge a mano nel file pending.
+    # Fa addiventà l'export CSV d' 'o modulo segnalaziune da ricuntrollà. Niente
+    # 'e "furbo": na riga ca nun torna se jetta cu 'o pecché, e si serve
+    # s'aggiusta a mano dint' 'o file pending.
     class Import
       Result = Struct.new(:reports, :rejected, :photos, keyword_init: true)
 
@@ -187,13 +187,13 @@ module PriceMonitor
         end
       end
 
-      # "6,50", "6.5 €", "€ 7" → 6.5, 6.5, 7.0
+      # Liegge 'o prezzo: "6,50", "6.5 €", "€ 7" → 6.5, 6.5, 7.0
       def parse_price(str)
         m = str.match(/(\d{1,2})(?:[.,](\d{1,2}))?/) or return nil
         "#{m[1]}.#{m[2] || 0}".to_f.round(2)
       end
 
-      # "reggio emilia" → "Reggio Emilia", "l'aquila" → "L'Aquila"
+      # Maiuscole a posto: "reggio emilia" → "Reggio Emilia", "l'aquila" → "L'Aquila"
       def city_name(str)
         str.squeeze(" ").downcase.gsub(/(\A|[\s'’-])(\p{L})/) { "#{Regexp.last_match(1)}#{Regexp.last_match(2).upcase}" }
       end

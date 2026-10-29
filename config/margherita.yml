@@ -1,23 +1,23 @@
-# Indice Margherita: segnalazioni degli utenti tramite un modulo esterno
-# (Tally, Google Moduli...). Mai dati presi dalle app di delivery.
+# Indice Margherita: segnalaziune d' 'a gente cu nu modulo 'e fore
+# (Tally, Google Moduli...). Maje date pigliate d' 'e app d' 'e consegne.
 
-# Link pubblico al modulo, mostrato sul sito. Vuoto = "modulo in arrivo".
+# 'O link pubblico d' 'o modulo, ca se vede ncopp' ô sito. Vacante = "modulo in arrivo".
 form_url: ""
 
-# Una città entra nell'indice in un mese solo con almeno questo numero di
-# pizzerie diverse: con meno, un solo prezzo strano farebbe il titolo.
+# Na città trase dint' a ll'indice pe' nu mese sulo cu almeno chisti tante
+# pizzerie diverse: cu 'e meno, nu prezzo stuorto sulo facesse 'o titolo.
 min_pizzerias: 3
 
-# Intervallo plausibile in euro per una margherita al tavolo.
+# 'O prezzo ca se pò credere, in euro, pe' na margherita ô tavolo.
 min: 2
 max: 25
 
-# Intestazioni delle colonne nell'export CSV del modulo. Se rinomini una
-# domanda nel modulo, aggiorna qui.
+# 'E nomme d' 'e colonne dint' a ll'export CSV d' 'o modulo. Appunì: si
+# cagne 'o nomme 'e na domanda dint' 'o modulo, cagnalo pure ccà.
 columns:
-  id: "Submission ID"        # Google Moduli: "Informazioni cronologiche"
-  date: "Data"               # quando hai visto il prezzo (gg/mm/aaaa o aaaa-mm-gg)
+  id: "Submission ID"        # cu Google Moduli: "Informazioni cronologiche"
+  date: "Data"               # quanno he visto 'o prezzo (gg/mm/aaaa o aaaa-mm-gg)
   city: "Città"
   pizzeria: "Pizzeria"
   price: "Prezzo"
-  photo: "Foto"              # foto del menu o dello scontrino (obbligatoria)
+  photo: "Foto"              # foto d' 'o menu o d' 'o scontrino (ce vo' pe' forza)

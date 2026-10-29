@@ -67,7 +67,7 @@
   h2 { margin: 0; font-size: 22px; line-height: 1.25; }
   .meta { margin: 4px 0 0; color: var(--ink-2); font-size: 14px; }
 
-  /* Calcolatore */
+  /* 'O calcolatore */
   .calc-grid { display: grid; gap: 24px; margin-top: 16px; }
   @media (min-width: 720px) { .calc-grid { grid-template-columns: 5fr 6fr; align-items: start; } }
   fieldset { border: 0; margin: 0; padding: 0; display: grid; gap: 12px; }
@@ -86,7 +86,7 @@
   .hero { margin: 0; font-size: 56px; font-weight: 600; line-height: 1.05; letter-spacing: -0.02em; }
   .hero-sub { margin: 6px 0 16px; color: var(--ink-2); }
 
-  /* Tabelle */
+  /* 'E tabelle */
   .table-wrap { overflow-x: auto; }
   table { width: 100%; border-collapse: collapse; font-size: 15px; }
   th { text-align: left; font-weight: 500; color: var(--ink-2); font-size: 13px; padding: 6px 8px 6px 0; }
@@ -96,7 +96,7 @@
   .sw { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; }
   .sw.none { background: transparent; }
 
-  /* Grafici */
+  /* 'E grafice */
   figure { margin: 20px 0 8px; }
   figcaption { font-size: 14px; color: var(--ink-2); }
   .legend { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 8px 0 4px; font-size: 14px; color: var(--ink-2); }
@@ -126,7 +126,7 @@
   .tip-row { display: flex; align-items: center; gap: 0; }
   .tip-row .val { margin-left: auto; padding-left: 12px; font-variant-numeric: tabular-nums; }
 
-  /* Storico eventi */
+  /* 'O storico d' 'e evente */
   details { margin-top: 16px; }
   summary { cursor: pointer; color: var(--link); font-size: 15px; }
   ol.events { list-style: none; margin: 8px 0 0; padding: 0; }
@@ -138,7 +138,7 @@
   .ev-note, .ev-src { margin: 4px 0 0; font-size: 14px; color: var(--ink-2); }
   .ev-src a { margin-right: 10px; overflow-wrap: anywhere; }
 
-  /* Navigazione e titoli di sezione */
+  /* Navigazione e titole d' 'e sezziune */
   nav.wrap { display: flex; flex-wrap: wrap; gap: 8px; padding-bottom: 8px; }
   nav a {
     font-size: 15px; text-decoration: none; color: var(--ink);
@@ -148,7 +148,7 @@
   .part { margin: 40px 0 0; font-size: 28px; line-height: 1.2; letter-spacing: -0.01em; }
   .part-lede { margin: 4px 0 0; color: var(--ink-2); max-width: 60ch; }
 
-  /* Indice Margherita */
+  /* L'Indice Margherita */
   .cta {
     display: inline-block; margin-top: 12px; padding: 10px 18px; border-radius: 8px;
     background: var(--ink); color: var(--page); text-decoration: none; font-weight: 600;
@@ -254,7 +254,7 @@
 
   function eur(v) { return eurFmt.format(v); }
   function ts(date) { return Date.parse(date + "T00:00:00Z"); }
-  // "1° gennaio", come si scrive in italiano
+  // "1° gennaio", comme se scrive in italiano
   function fmtDate(date) { return dateLong.format(ts(date)).replace(/^1 /, "1° "); }
   function round2(v) { return Math.round(v * 100) / 100; }
 
@@ -276,7 +276,7 @@
     return n;
   }
 
-  // ---- Stessa logica di PriceMonitor::History -------------------------------
+  // ---- 'A stessa logica 'e PriceMonitor::History ----------------------------
 
   function svc(id) { return H.services[id]; }
 
@@ -286,8 +286,8 @@
     });
   }
 
-  // Listino per i nuovi abbonati alla data: ogni evento sovrascrive i piani
-  // che nomina, null = piano non più sottoscrivibile.
+  // 'O listino pe' chi s'abbona nuovo a chella data: ogni evento se scrive ncopp'
+  // ê piane ca nomina, null = piano ca nun se pò cchiù fà.
   function pricesAt(id, date) {
     var acc = {};
     var evs = events(id);
@@ -301,7 +301,7 @@
     return acc;
   }
 
-  // Esclude i piani dismessi senza una data verificata.
+  // Lassa fore 'e piane fernute ca nun teneno na data sicura.
   function current(id) {
     var acc = pricesAt(id, TODAY);
     (svc(id).discontinued_undated || []).forEach(function (p) { delete acc[p]; });
@@ -310,7 +310,7 @@
 
   function label(id, plan) { return svc(id).plans[plan] || plan; }
 
-  // Piani che compaiono almeno in un evento, nell'ordine di "plans" dello storico.
+  // 'E piane ca stanno almeno dint' a n'evento, cu ll'ordine 'e "plans" d' 'o storico.
   function allPlans(id) {
     var seen = [];
     events(id).forEach(function (ev) {
@@ -320,9 +320,9 @@
     return seen.sort(function (a, b) { return order.indexOf(a) - order.indexOf(b); });
   }
 
-  // Nel grafico solo i prezzi mensili (gli annuali sono su un'altra scala) e
-  // non i piani dismessi senza data: disegnarli fino a oggi sarebbe falso.
-  // Il colore è legato al piano, nell'ordine di "plans" dello storico.
+  // Dint' 'o grafico sulo 'e prezze d' 'o mese ('e annuale stanno ncopp' a n'ata
+  // scala) e no 'e piane fernute senza data: disegnarle fino a mo' fosse fauzo.
+  // Appunì: 'o culore va appriesso ô piano, cu ll'ordine 'e "plans" d' 'o storico.
   function chartPlans(id) {
     var skip = svc(id).discontinued_undated || [];
     var used = allPlans(id);
@@ -331,7 +331,7 @@
     });
   }
 
-  // ---- Calcolatore (stessa logica di PriceMonitor::Calculator) --------------
+  // ---- Calcolatore ('a stessa logica 'e PriceMonitor::Calculator) ----------
 
   var DEFAULTS = { netflix: "standard", spotify: "premium", disney_plus: "premium" };
 
@@ -422,7 +422,7 @@
     }
   }
 
-  // ---- Sezione per servizio --------------------------------------------------
+  // ---- Na sezzione pe' ogni servizio -----------------------------------------
 
   function buildService(id) {
     var data = svc(id);
@@ -438,7 +438,7 @@
         (lastUp ? " · ultimo rincaro il " + fmtDate(lastUp.date) : "")
     }));
 
-    // Grafico
+    // 'O grafico
     var legend = h("div", { class: "legend" });
     plotted.forEach(function (p, i) {
       legend.appendChild(h("span", {}, [
@@ -454,7 +454,7 @@
     ]));
     drawChart(plot, id, plotted);
 
-    // Tabella listino: dal lancio a oggi, anche annuali e piani dismessi
+    // Tabella d' 'o listino: d' 'o lancio a mo', pure annuale e piane fernute
     var now = current(id);
     var undated = data.discontinued_undated || [];
     var table = h("table", {}, [h("tr", {}, [
@@ -489,7 +489,7 @@
     });
     section.appendChild(h("div", { class: "table-wrap" }, [table]));
 
-    // Storico variazioni con fonti, dalla più recente
+    // 'O storico d' 'e variaziune cu 'e fonte, d' 'a cchiù fresca
     var acc = {};
     var items = evs.map(function (ev) {
       var changes = h("ul", { class: "changes" });
@@ -533,10 +533,10 @@
     return section;
   }
 
-  // ---- Grafico a gradini con tooltip ----------------------------------------
+  // ---- Grafico a scalini cu 'o tooltip ---------------------------------------
 
-  // Segmenti a gradino di un piano: il prezzo resta fermo fino all'evento
-  // successivo; null chiude il segmento (piano ritirato).
+  // 'E piezze a scalino 'e nu piano: 'o prezzo resta fermo fino a ll'evento
+  // appriesso; null chiude 'o piezzo (piano levato).
   function steps(id, plan) {
     var segs = [];
     var cur = null;
@@ -624,7 +624,7 @@
         });
       });
 
-      // Valori a fine linea, solo se non si sovrappongono: altrimenti legenda e tooltip
+      // 'E valure â fine d' 'a linea, sulo si nun se mettono uno ncopp' a ll'ato: sinnò legenda e tooltip
       ends.sort(function (a, b) { return a.y - b.y; });
       var fits = ends.every(function (e, k) { return !k || e.y - ends[k - 1].y >= 14; });
       if (fits) {
@@ -700,7 +700,7 @@
     else window.addEventListener("resize", render);
   }
 
-  // ---- Indice Margherita (calcolato da PriceMonitor::Margherita::Index) ------
+  // ---- Indice Margherita (fatto 'a PriceMonitor::Margherita::Index) ---------
 
   function monthName(month) { return monthYear.format(ts(month + "-01")); }
 
@@ -765,7 +765,7 @@
     box.appendChild(cta);
   }
 
-  // ---- Avvio ------------------------------------------------------------------
+  // ---- Se parte ---------------------------------------------------------------
 
   var box = document.getElementById("services");
   Object.keys(H.services).forEach(function (id) { box.appendChild(buildService(id)); });

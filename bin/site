@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-# Genera il sito statico in _site/ dai dati approvati (storico abbonamenti e
-# Indice Margherita). data/pending/ non viene mai pubblicato.
+# Fa 'o sito fermo dint' a _site/ d' 'e date appruvate (storico d' 'e abbonamente
+# e Indice Margherita). Appunì: data/pending/ nun se pubblica maje.
 #
 #   bin/site            # scrive _site/index.html
 

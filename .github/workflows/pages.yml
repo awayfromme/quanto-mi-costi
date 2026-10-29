@@ -1,5 +1,5 @@
-# Pubblica il sito su GitHub Pages quando cambiano i dati approvati o il sito.
-# Gira sui runner di GitHub: non legge pagine prezzi, quindi l'IP non conta.
+# Mette 'o sito ncopp' a GitHub Pages quanno cagnano 'e date appruvate o 'o sito.
+# Gira ncopp' ê runner 'e GitHub: nun legge paggene 'e prezze, quindi ll'IP nun conta.
 
 name: sito
 
