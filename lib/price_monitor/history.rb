@@ -51,6 +51,21 @@ module PriceMonitor
       save!
     end
 
+    # Azzecca fonte (e si serve na nota nova) a n'evento ca già ce sta,
+    # senza tuccà date e prezze: serve pe' quanno 'a conferma s'è sgammata doppo.
+    def amend_event!(id, date, sources:, note: nil)
+      matches = service(id).fetch("events").select { |e| e["date"] == date }
+      raise "#{id}: #{matches.size} eventi in data #{date}, ne serve esattamente uno" unless matches.size == 1
+      raise "Nessuna fonte da aggiungere" if Array(sources).empty?
+
+      event = matches.first
+      event["sources"] = (event.fetch("sources") + sources).uniq
+      event["note"] = note if note
+      data["meta"]["updated_at"] = Date.today.iso8601
+      save!
+      event
+    end
+
     def save!
       raise "History caricata senza path" unless @path
 

@@ -17,9 +17,10 @@ permissions:
 
 jobs:
   monitor:
+    # Appunì: checkout@v7 gira cu Node 24, 'o runner ha da essere na versione recente.
     runs-on: [self-hosted, italy]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: ruby/setup-ruby@v1
         with:

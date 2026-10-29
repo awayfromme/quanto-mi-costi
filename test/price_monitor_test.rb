@@ -109,6 +109,38 @@ class HistoryTest < Minitest::Test
   end
 end
 
+class HistoryAmendTest < Minitest::Test
+  def with_history_copy
+    Dir.mktmpdir do |dir|
+      path = File.join(dir, "history.json")
+      File.write(path, File.read(PriceMonitor.path("data", "history.json"), encoding: "UTF-8"))
+      yield path
+    end
+  end
+
+  def test_amend_adds_sources_without_touching_prices
+    with_history_copy do |path|
+      before = PriceMonitor::History.load(path).prices_at("spotify", "2026-10-29")
+      PriceMonitor::History.load(path).amend_event!("spotify", "2025-08-04",
+                                                    sources: ["https://www.spotify.com/it/premium/"], note: "ok")
+      h = PriceMonitor::History.load(path)
+      ev = h.events("spotify").find { |e| e["date"] == "2025-08-04" }
+
+      assert_equal before, h.prices_at("spotify", "2026-10-29")
+      assert_equal "https://www.spotify.com/it/premium/", ev["sources"].last
+      assert_equal "ok", ev["note"]
+    end
+  end
+
+  def test_amend_needs_exactly_one_event_on_that_date
+    with_history_copy do |path|
+      assert_raises(RuntimeError) do
+        PriceMonitor::History.load(path).amend_event!("spotify", "1999-01-01", sources: ["x"])
+      end
+    end
+  end
+end
+
 class DifferTest < Minitest::Test
   def test_detects_increase_and_ignores_unchanged
     changes = PriceMonitor::Differ.new(%w[premium duo])

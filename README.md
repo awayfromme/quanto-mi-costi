@@ -80,9 +80,10 @@ GitHub Pages a ogni push che tocca dati approvati o sito.
 
 ## Punti dello storico ancora da confermare
 
-- Spotify Student dal 2025: quasi tutte le fonti dicono 6,49 €, una 6,99 €.
 - Spotify Unlimited: data di dismissione non trovata; il piano è escluso dal
   listino attuale ma non ha un evento di chiusura.
-- Disney+ Premium annuale 159,90 € (2025): una sola fonte di comparazione.
 - Le date `existing_from` del 2025 sono il primo giorno del mese indicato
   dalle fonti, non il giorno esatto.
+
+Confermati dalle pagine ufficiali il 29/10/2026: Spotify Student 6,49 € e
+Disney+ Premium annuale 159,90 € (fonti aggiunte con `bin/approve`).

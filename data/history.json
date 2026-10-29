@@ -218,10 +218,11 @@
             "student": 6.49
           },
           "existing_from": "2025-09-01",
-          "note": "Student: alcune fonti riportano 6,99 €, la maggioranza 6,49 €. Da verificare sul sito ufficiale.",
+          "note": "Student: alcune fonti dell'epoca riportavano 6,99 €, la maggioranza 6,49 €. La pagina ufficiale indica 6,49 € al 29/10/2026, senza variazioni note da agosto 2025.",
           "sources": [
             "https://www.mondomobileweb.it/?p=305901",
-            "https://www.businessonline.it/news/spotify-nuovi-aumenti-di-prezzi-in-usa-molto-probabili-rincari-anche-in-italia-durante-questanno_n81657.html"
+            "https://www.businessonline.it/news/spotify-nuovi-aumenti-di-prezzi-in-usa-molto-probabili-rincari-anche-in-italia-durante-questanno_n81657.html",
+            "https://www.spotify.com/it/premium/"
           ]
         }
       ]
@@ -310,11 +311,12 @@
             "premium_annual": 159.9
           },
           "existing_from": "2025-11-01",
-          "note": "Per i già abbonati il rincaro scatta dal primo rinnovo da novembre 2025. Da luglio 2026 esistono anche piani con vincolo di 6 mesi a prezzo ridotto (offerta, non listino).",
+          "note": "Per i già abbonati il rincaro scatta dal primo rinnovo da novembre 2025. Premium annuale 159,90 € e Standard annuale 109,90 € confermati dalla pagina d'aiuto ufficiale al 29/10/2026. Da luglio 2026 esistono anche piani con vincolo di 6 mesi a prezzo ridotto (offerta, non listino).",
           "sources": [
             "https://www.mondomobileweb.it/?p=309766",
             "https://multiplayer.it/notizie/disney-ora-costa-di-piu-anche-in-italia-vediamo-i-nuovi-prezzi-annunciati-e-in-vigore-a-partire-da-oggi.html",
-            "https://www.comparasemplice.it/informazioni/tv/quanto-costa-disney-plus"
+            "https://www.comparasemplice.it/informazioni/tv/quanto-costa-disney-plus",
+            "https://help.disneyplus.com/it/article/disneyplus-price"
           ]
         }
       ]

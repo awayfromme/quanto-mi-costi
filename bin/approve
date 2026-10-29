@@ -7,6 +7,10 @@
 #
 #   bin/approve netflix-2026-11-02.json
 #   bin/approve margherita-2026-11-02.json   # segnalazioni dell'Indice Margherita
+#
+# Appunì: nu pending cu "amend" nun crea n'evento nuovo, azzecca sulo fonte
+# (e si vuò na nota nova) a ll'evento ca tene già chella data.
+#   { "service": "spotify", "amend": "2025-08-04", "sources": [...], "note": "..." }
 
 require_relative "../lib/price_monitor"
 
@@ -26,6 +30,14 @@ end
 
 service  = proposal.delete("service")
 history  = PriceMonitor::History.load
+
+if proposal["amend"]
+  event = history.amend_event!(service, proposal["amend"], sources: proposal.fetch("sources"),
+                                                           note: proposal["note"])
+  puts "Storico di #{service}, evento del #{proposal['amend']}: ora #{event['sources'].size} fonti"
+  File.delete(path)
+  exit
+end
 
 before = history.current(service)
 history.append_event!(service, proposal)
