@@ -1,0 +1,46 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Riepilogo dello storico e prova del calcolatore "Quanto mi costi".
+#
+#   bin/report                         # listino attuale + rincari dal lancio
+#   bin/report --since 2019-01-01 netflix:standard spotify:premium disney_plus:premium
+
+require_relative "../lib/price_monitor"
+
+history = PriceMonitor::History.load
+
+if ARGV.first == "--since"
+  since = Date.parse(ARGV[1])
+  subs  = ARGV[2..].map { |s| s.split(":", 2) }
+  r = PriceMonitor::Calculator.new(history).compare(subs, since: since)
+
+  r[:lines].each do |l|
+    old = l.then_price ? format("%6.2f €", l.then_price) : "  (n.d.)"
+    puts format("%-12s %-14s %s → %6.2f €", l.service, l.plan, old, l.now_price || 0)
+  end
+  puts "-" * 52
+  puts format("Al mese: %.2f € → %.2f € (%+.1f%%)", r[:monthly_then], r[:monthly_now], r[:pct] || 0)
+  puts format("Paghi %.2f € in più all'anno rispetto al %s", r[:yearly_delta], since.strftime("%d/%m/%Y"))
+  exit
+end
+
+history.services.each do |id|
+  svc   = history.service(id)
+  now   = history.current(id)
+  plans = history.events(id).flat_map { |e| e["prices"].keys }.uniq
+
+  puts "\n#{svc['name']} (in Italia dal #{Date.parse(svc['launched_it']).strftime('%d/%m/%Y')})"
+  plans.each do |plan|
+    # prezzo con cui il piano è comparso la prima volta in Italia
+    launch = history.events(id).find { |e| e["prices"][plan] }["prices"][plan]
+    current = now[plan]
+    label = history.label(id, plan)
+    if current.nil?
+      puts format("  %-28s %6.2f € → non più disponibile", label, launch)
+    else
+      delta = ((current / launch) - 1) * 100
+      puts format("  %-28s %6.2f € → %6.2f €  (%+.0f%%)", label, launch, current, delta)
+    end
+  end
+end

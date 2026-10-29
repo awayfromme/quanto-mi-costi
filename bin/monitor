@@ -1,0 +1,81 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Giro giornaliero: per ogni servizio legge la pagina prezzi, salva il testo
+# (git scraping: il diff nel repo mostra cosa è cambiato), confronta con lo
+# storico e, se trova una variazione, crea una proposta in data/pending/
+# e ti avvisa. Lo storico NON viene toccato finché non approvi.
+#
+#   bin/monitor                 # tutti i servizi
+#   bin/monitor netflix spotify # solo alcuni
+#   bin/monitor --from-file netflix test/fixtures/netflix.txt  # senza browser
+
+require_relative "../lib/price_monitor"
+
+config   = PriceMonitor.services_config
+history  = PriceMonitor::History.load
+notifier = PriceMonitor::Notifier.new
+today    = Date.today.iso8601
+
+if ARGV.first == "--from-file"
+  _, service, file = ARGV
+  targets = { service => File.read(file, encoding: "UTF-8") }
+else
+  require_relative "../lib/price_monitor/fetcher"
+  fetcher = PriceMonitor::Fetcher.new
+  names = ARGV.empty? ? config.keys : ARGV
+  targets = names.to_h do |name|
+    cfg = config.fetch(name)
+    [name, fetcher.text(cfg.fetch("url"), wait_for: cfg.fetch("wait_for", "body"))]
+  rescue StandardError => e
+    notifier.notify("❌ #{name}: impossibile leggere la pagina (#{e.class}: #{e.message})")
+    [name, nil]
+  end
+end
+
+exit_code = 0
+
+targets.each do |name, text|
+  next(exit_code = 1) if text.nil?
+
+  cfg = config.fetch(name)
+
+  snapshot_dir = PriceMonitor.path("data", "snapshots", name)
+  Dir.mkdir(snapshot_dir) unless Dir.exist?(snapshot_dir)
+  File.write(File.join(snapshot_dir, "latest.txt"), text)
+
+  result = PriceMonitor::Extractor.new(cfg.fetch("plans")).call(text)
+  unless result.ok?
+    exit_code = 1
+    notifier.notify("⚠️ #{name}: estrazione incompleta, controlla la pagina\n" \
+                    "#{result.errors.join("\n")}\n#{cfg['url']}")
+  end
+
+  changes = PriceMonitor::Differ.new(cfg.fetch("plans").keys)
+                                .call(history.current(name), result.prices)
+  if changes.empty?
+    puts "✓ #{name}: nessuna variazione (#{result.prices.map { |k, v| "#{k}=#{v}" }.join(', ')})"
+    next
+  end
+
+  pending = {
+    "service" => name,
+    "date" => today,
+    "type" => changes.all? { |c| c.kind == :new_plan } ? "new_plan" : "increase",
+    "prices" => changes.to_h { |c| [c.plan, c.new_price] },
+    "note" => "Rilevato automaticamente dal monitor",
+    "sources" => [cfg.fetch("url")]
+  }
+  pending_path = PriceMonitor.path("data", "pending", "#{name}-#{today}.json")
+  File.write(pending_path, JSON.pretty_generate(pending) + "\n")
+
+  notifier.notify(<<~MSG)
+    💶 #{history.service(name)['name']}: variazione di prezzo rilevata
+    #{changes.map(&:to_s).join("\n")}
+
+    Controlla e approva con:
+    bin/approve #{File.basename(pending_path)}
+  MSG
+end
+
+exit exit_code

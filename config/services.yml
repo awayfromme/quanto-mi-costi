@@ -1,0 +1,73 @@
+# Pagine da monitorare e come riconoscere ogni piano nel testo della pagina.
+#
+# match:    regex (case-insensitive) che identifica la riga col nome del piano
+# exclude:  regex opzionale: se la riga la contiene, NON è questo piano
+#           (serve a distinguere "Standard" da "Standard con pubblicità")
+# lookahead: quante righe dopo il nome cercare il prezzo (default 6)
+# min/max:  intervallo plausibile in euro; fuori range = estrazione sospetta
+#
+# ⚠️ Gli URL vanno verificati da un IP italiano prima di andare in produzione:
+#    i siti cambiano spesso la struttura delle pagine prezzi.
+
+netflix:
+  url: https://help.netflix.com/it/node/24926   # pagina di aiuto "Piani e prezzi"
+  wait_for: body
+  plans:
+    base_ads:
+      match: 'standard con pubblicit'
+      min: 3
+      max: 15
+    standard:
+      match: '^\s*standard\b'
+      exclude: 'pubblicit'
+      min: 8
+      max: 25
+    premium:
+      match: '^\s*premium\b'
+      min: 12
+      max: 35
+
+spotify:
+  url: https://www.spotify.com/it/premium/
+  wait_for: body
+  plans:
+    premium:
+      match: '^\s*(premium\s+)?individual'
+      min: 7
+      max: 20
+    duo:
+      match: '^\s*(premium\s+)?duo'
+      min: 10
+      max: 25
+    family:
+      match: '^\s*(premium\s+)?family'
+      min: 12
+      max: 30
+    student:
+      match: '^\s*(premium\s+)?student'
+      min: 3
+      max: 12
+
+# Pagina d'aiuto "Piani e prezzi", non la home: la home mostra i prezzi
+# promozionali con vincolo di 6 mesi ("A partire da ...") prima del listino.
+# Le regex sono ancorate a fine riga perché in fondo alla pagina ci sono righe
+# "Disney+ Standard: 6,99 € al mese" che non sono il listino.
+disney_plus:
+  url: https://help.disneyplus.com/it/article/disneyplus-price
+  wait_for: body
+  plans:
+    standard_ads:
+      match: '^disney\+\s+standard con pubblicit[aà]$'
+      lookahead: 8
+      min: 3
+      max: 15
+    standard:
+      match: '^disney\+\s+standard$'
+      lookahead: 8
+      min: 6
+      max: 20
+    premium:
+      match: '^disney\+\s+premium$'
+      lookahead: 8
+      min: 8
+      max: 30

@@ -1,0 +1,31 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Sposta una variazione proposta da data/pending/ dentro lo storico.
+# Prima di approvare puoi modificare a mano il file pending: aggiungere
+# fonti, una nota, la data "existing_from" per i già abbonati.
+#
+#   bin/approve netflix-2026-11-02.json
+
+require_relative "../lib/price_monitor"
+
+file = ARGV.fetch(0) { abort "Uso: bin/approve <file in data/pending/>" }
+path = File.exist?(file) ? file : PriceMonitor.path("data", "pending", file)
+abort "Non trovo #{path}" unless File.exist?(path)
+
+proposal = JSON.parse(File.read(path, encoding: "UTF-8"))
+service  = proposal.delete("service")
+history  = PriceMonitor::History.load
+
+before = history.current(service)
+history.append_event!(service, proposal)
+after = history.current(service)
+
+puts "Storico di #{service} aggiornato:"
+(before.keys | after.keys).sort.each do |plan|
+  next if before[plan] == after[plan]
+
+  puts format("  %-16s %s → %s", plan, before[plan] || "—", after[plan] || "rimosso")
+end
+
+File.delete(path)

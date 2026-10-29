@@ -1,0 +1,323 @@
+{
+  "meta": {
+    "country": "IT",
+    "currency": "EUR",
+    "updated_at": "2026-10-29",
+    "notes": [
+      "Ogni evento indica i prezzi di listino per i NUOVI abbonati dalla data 'date'. 'existing_from' indica quando il rincaro è arrivato ai già abbonati, se noto.",
+      "Un prezzo null significa che il piano non è più sottoscrivibile dai nuovi abbonati.",
+      "Prezzi mensili salvo i piani con suffisso _annual."
+    ]
+  },
+  "services": {
+    "netflix": {
+      "name": "Netflix",
+      "launched_it": "2015-10-22",
+      "plans": {
+        "base": "Base",
+        "base_ads": "Standard con pubblicità",
+        "standard": "Standard",
+        "premium": "Premium"
+      },
+      "plan_notes": {
+        "base": "Senza pubblicità, 1 schermo. Non più sottoscrivibile dai nuovi abbonati dal 9/10/2023.",
+        "base_ads": "Lanciato come 'Base con pubblicità', poi rinominato."
+      },
+      "events": [
+        {
+          "date": "2015-10-22",
+          "type": "launch",
+          "prices": {
+            "base": 7.99,
+            "standard": 9.99,
+            "premium": 11.99
+          },
+          "note": "Lancio in Italia con tre piani.",
+          "sources": [
+            "https://www.ilpost.it/2015/10/22/netflix-italia-oggi-funziona-tariffe/",
+            "https://multiplayer.it/notizie/156865-netflix-arriva-in-italia-il-22-ottobre-ecco-i-prezzi-ufficiali.html"
+          ]
+        },
+        {
+          "date": "2017-10-09",
+          "type": "increase",
+          "prices": {
+            "standard": 10.99,
+            "premium": 13.99
+          },
+          "existing_from": "2017-10-09",
+          "note": "Primo rincaro: Base invariato. Valido per nuovi e già abbonati.",
+          "sources": [
+            "https://www.mondomobileweb.it/?p=73051",
+            "https://www.yourlifeupdated.net/news/ufficiale-aumenta-il-costo-di-netflix-in-italia"
+          ]
+        },
+        {
+          "date": "2019-06-20",
+          "type": "increase",
+          "prices": {
+            "standard": 11.99,
+            "premium": 15.99
+          },
+          "note": "Base invariato a 7,99 €.",
+          "sources": [
+            "https://www.corrierecomunicazioni.it/media/netflix-aumenta-i-prezzi-scattano-gli-aumenti-anche-in-italia",
+            "https://global.techradar.com/it-it/news/netflix-aumenta-i-prezzi-in-italia"
+          ]
+        },
+        {
+          "date": "2021-10-02",
+          "type": "increase",
+          "prices": {
+            "standard": 12.99,
+            "premium": 17.99
+          },
+          "existing_from": "2021-10-02",
+          "note": "Valido anche per i già abbonati.",
+          "sources": [
+            "https://www.corrierecomunicazioni.it/?p=207436"
+          ]
+        },
+        {
+          "date": "2022-11-03",
+          "type": "new_plan",
+          "prices": {
+            "base_ads": 5.49
+          },
+          "note": "Arriva 'Base con pubblicità', poi rinominato 'Standard con pubblicità'.",
+          "sources": [
+            "https://about.netflix.com/it/news/our-newest-plan-now-available-it",
+            "https://www.smartworld.it/news/netflix-disponibile-piano-pubblicita-italia-costo-funziona.html"
+          ]
+        },
+        {
+          "date": "2023-10-09",
+          "type": "plan_removed",
+          "prices": {
+            "base": null
+          },
+          "note": "Il piano Base da 7,99 € non è più sottoscrivibile dai nuovi abbonati; chi lo aveva poteva tenerlo.",
+          "sources": [
+            "https://multiplayer.it/notizie/netflix-il-piano-base-senza-pubblicita-e-stato-eliminato-anche-in-italia.html",
+            "https://www.smartworld.it/news/netflix-rimosso-piano-base-italia.html"
+          ]
+        },
+        {
+          "date": "2024-10-18",
+          "type": "increase",
+          "prices": {
+            "base_ads": 6.99,
+            "standard": 13.99,
+            "premium": 19.99
+          },
+          "note": "Ultimo rincaro in Italia: listino invariato almeno fino a settembre 2026.",
+          "sources": [
+            "https://www.money.it/quanto-costa-netflix-prezzi-abbonamenti-in-italia",
+            "https://www.macitynet.it/rincaro-netflix-2025-prezzi/"
+          ]
+        }
+      ]
+    },
+    "spotify": {
+      "name": "Spotify",
+      "launched_it": "2013-02-12",
+      "plans": {
+        "unlimited": "Unlimited",
+        "premium": "Premium Individual",
+        "duo": "Premium Duo",
+        "family": "Premium Family",
+        "student": "Premium Student"
+      },
+      "plan_notes": {
+        "unlimited": "Solo desktop, senza pubblicità. Dismesso: data di chiusura non verificata."
+      },
+      "discontinued_undated": [
+        "unlimited"
+      ],
+      "events": [
+        {
+          "date": "2013-02-12",
+          "type": "launch",
+          "prices": {
+            "unlimited": 4.99,
+            "premium": 9.99
+          },
+          "note": "Lancio in Italia in concomitanza con Sanremo. Il piano Unlimited è stato poi dismesso: data da verificare prima di pubblicarla.",
+          "sources": [
+            "https://tg24.sky.it/economia/2013/02/12/spotify_italia_musica_streaming",
+            "https://thenextweb.com/news/spotify-launches-in-italy-expanding-its-presence-to-22-countries"
+          ]
+        },
+        {
+          "date": "2016-05-23",
+          "type": "new_plan",
+          "prices": {
+            "family": 14.99
+          },
+          "note": "Family a prezzo fisso per 6 account (dal 2014 esisteva un Family a sconto per account aggiuntivo).",
+          "sources": [
+            "https://www.ilpost.it/2016/05/23/lopzione-premium-for-family-di-spotify-ora-puo-essere-usata-da-6-diversi-account-a-1499-euro-al-mese/"
+          ]
+        },
+        {
+          "date": "2017-04-19",
+          "type": "new_plan",
+          "prices": {
+            "student": 4.99
+          },
+          "note": "Data dell'articolo che annuncia il piano Student in Italia (approssimata al giorno di pubblicazione).",
+          "sources": [
+            "https://www.rockit.it/news/spotify-sconti-studenti-italia",
+            "https://www.macitynet.it/spotify-premium-meta-prezzo-gli-studenti-universitari/"
+          ]
+        },
+        {
+          "date": "2020-07-01",
+          "type": "new_plan",
+          "prices": {
+            "duo": 12.99
+          },
+          "sources": [
+            "https://tg24.sky.it/tecnologia/2020/07/01/spotify-premium-duo-italia"
+          ]
+        },
+        {
+          "date": "2021-02-01",
+          "type": "increase",
+          "prices": {
+            "family": 15.99
+          },
+          "existing_from": "2021-03-01",
+          "note": "Solo il Family; i già abbonati hanno avuto un mese in più al vecchio prezzo.",
+          "sources": [
+            "https://www.yourlifeupdated.net/news/spotify-aumenta-il-prezzo-del-piano-premium-famiglia-in-italia"
+          ]
+        },
+        {
+          "date": "2023-07-24",
+          "type": "increase",
+          "prices": {
+            "premium": 10.99,
+            "duo": 14.99,
+            "family": 17.99,
+            "student": 5.99
+          },
+          "note": "Primo rincaro dell'Individual dopo oltre 10 anni a 9,99 €.",
+          "sources": [
+            "https://www.mondomobileweb.it/?p=262835",
+            "https://www.open.online/2023/07/24/spotify-aumento-prezzo-abbonamenti-italia/"
+          ]
+        },
+        {
+          "date": "2025-08-04",
+          "type": "increase",
+          "prices": {
+            "premium": 11.99,
+            "duo": 16.99,
+            "family": 20.99,
+            "student": 6.49
+          },
+          "existing_from": "2025-09-01",
+          "note": "Student: alcune fonti riportano 6,99 €, la maggioranza 6,49 €. Da verificare sul sito ufficiale.",
+          "sources": [
+            "https://www.mondomobileweb.it/?p=305901",
+            "https://www.businessonline.it/news/spotify-nuovi-aumenti-di-prezzi-in-usa-molto-probabili-rincari-anche-in-italia-durante-questanno_n81657.html"
+          ]
+        }
+      ]
+    },
+    "disney_plus": {
+      "name": "Disney+",
+      "launched_it": "2020-03-24",
+      "plans": {
+        "standard_ads": "Standard con pubblicità",
+        "standard": "Standard",
+        "standard_annual": "Standard annuale",
+        "premium": "Premium",
+        "premium_annual": "Premium annuale"
+      },
+      "plan_notes": {
+        "premium": "Fino a novembre 2023 era l'unico piano, senza nome."
+      },
+      "events": [
+        {
+          "date": "2020-03-24",
+          "type": "launch",
+          "prices": {
+            "premium": 6.99,
+            "premium_annual": 69.99
+          },
+          "note": "Un solo piano (4K, 4 schermi), rinominato Premium nel 2023.",
+          "sources": [
+            "https://www.punto-informatico.it/disney-plus-lancio-italia-24-marzo/",
+            "https://www.mondomobileweb.it/?p=167695"
+          ]
+        },
+        {
+          "date": "2021-02-23",
+          "type": "increase",
+          "prices": {
+            "premium": 8.99,
+            "premium_annual": 89.9
+          },
+          "existing_from": "2021-08-23",
+          "note": "Rincaro legato all'arrivo di Star.",
+          "sources": [
+            "https://www.tecnoandroid.it/2021/02/02/disney-ecco-le-nuove-tariffe-per-labbonamento-mensile-e-annuale-866935",
+            "https://www.mondomobileweb.it/?p=201364"
+          ]
+        },
+        {
+          "date": "2023-11-01",
+          "type": "restructure",
+          "prices": {
+            "standard_ads": 5.99,
+            "standard": 8.99,
+            "standard_annual": 89.9,
+            "premium": 11.99,
+            "premium_annual": 119.9
+          },
+          "note": "Nascono Standard con pubblicità e Standard; il vecchio piano diventa Premium e sale di prezzo.",
+          "sources": [
+            "https://www.mondomobileweb.it/?p=268158",
+            "https://multiplayer.it/notizie/disney-disponibili-italia-nuovi-piani-con-senza-pubblicita-da-5-99-euro-al-mese.html"
+          ]
+        },
+        {
+          "date": "2024-10-17",
+          "type": "increase",
+          "prices": {
+            "standard": 9.99,
+            "standard_annual": 99.9,
+            "premium": 13.99,
+            "premium_annual": 139.9
+          },
+          "existing_from": "2024-11-21",
+          "note": "Standard con pubblicità invariato.",
+          "sources": [
+            "https://www.mondomobileweb.it/?p=291209",
+            "https://www.sostariffe.it/news/disney-aumenta-i-prezzi-ai-gia-abbonati-quanto-costa-ora-il-servizio-397955/"
+          ]
+        },
+        {
+          "date": "2025-09-30",
+          "type": "increase",
+          "prices": {
+            "standard_ads": 6.99,
+            "standard": 10.99,
+            "standard_annual": 109.9,
+            "premium": 15.99,
+            "premium_annual": 159.9
+          },
+          "existing_from": "2025-11-01",
+          "note": "Per i già abbonati il rincaro scatta dal primo rinnovo da novembre 2025. Da luglio 2026 esistono anche piani con vincolo di 6 mesi a prezzo ridotto (offerta, non listino).",
+          "sources": [
+            "https://www.mondomobileweb.it/?p=309766",
+            "https://multiplayer.it/notizie/disney-ora-costa-di-piu-anche-in-italia-vediamo-i-nuovi-prezzi-annunciati-e-in-vigore-a-partire-da-oggi.html",
+            "https://www.comparasemplice.it/informazioni/tv/quanto-costa-disney-plus"
+          ]
+        }
+      ]
+    }
+  }
+}
