@@ -7,31 +7,59 @@
 
 name: monitor-prezzi
 
+# Appunì: 'o cron 'e GitHub è sempe UTC. 'E 10 'e Roma so' 'e 8 UTC cu ll'ora
+# legale e 'e 9 UTC cu ll'ora solare: mettimmo tutt' 'e dduje e 'o job "ora"
+# fa partì sulo chillo giusto, accussì s'arriva sempe ê 10 'e Roma.
 on:
   schedule:
-    - cron: "17 6 * * *"   # ogni juorno ê 6:17 UTC (minuto stuorto pe' nun fà 'a fila)
+    - cron: "0 8 * * *"
+    - cron: "0 9 * * *"
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
+  ora:
+    runs-on: ubuntu-latest
+    outputs:
+      parte: ${{ steps.roma.outputs.parte }}
+    steps:
+      - id: roma
+        env:
+          CRON: ${{ github.event.schedule }}
+        run: |
+          # +0200 = ora legale (vo' 'o cron d' 'e 8), +0100 = ora solare (vo' chillo d' 'e 9)
+          if [ "$(TZ=Europe/Rome date +%z)" = "+0200" ]; then giusto="0 8 * * *"; else giusto="0 9 * * *"; fi
+          # A mano (workflow_dispatch) parte sempe
+          if [ -z "$CRON" ] || [ "$CRON" = "$giusto" ]; then parte=true; else parte=false; fi
+          echo "cron=$CRON giusto=$giusto parte=$parte"
+          echo "parte=$parte" >> "$GITHUB_OUTPUT"
+
   monitor:
+    needs: ora
+    if: needs.ora.outputs.parte == 'true'
     # Appunì: checkout@v7 gira cu Node 24, 'o runner ha da essere na versione recente.
     runs-on: [self-hosted, italy]
+    # Ruby e Chrome hanno 'a stà già ncopp' â machina d' 'o runner: setup-ruby
+    # ncopp' ê runner self-hosted 'e Windows nun è affidabile. Cu bash e
+    # "ruby bin/..." 'o stesso workflow va pure ncopp' a na VPS Linux.
+    defaults:
+      run:
+        shell: bash
+    env:
+      BUNDLE_PATH: vendor/bundle
     steps:
       - uses: actions/checkout@v7
 
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: "3.3"
-          bundler-cache: true
+      - name: Gemme
+        run: bundle install
 
       - name: Test
         run: bundle exec rake test
 
       - name: Monitor
-        run: bundle exec bin/monitor
+        run: bundle exec ruby bin/monitor
         continue-on-error: true   # si nu sito è caduto, nun ha da fermà 'o commit 'e ll'ate
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
