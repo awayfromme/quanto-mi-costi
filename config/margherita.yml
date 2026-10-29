@@ -21,3 +21,4 @@ columns:
   pizzeria: "Pizzeria"
   price: "Prezzo"
   photo: "Foto"              # foto d' 'o menu o d' 'o scontrino (ce vo' pe' forza)
+  consent: "Consenso"        # 'a casella CC BY 4.0: senza 'o sì, 'a segnalazione se jetta

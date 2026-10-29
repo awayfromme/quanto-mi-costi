@@ -172,6 +172,9 @@ module PriceMonitor
         photo = get["photo"]
         return [nil, nil, "manca la foto del menu o dello scontrino"] unless photo.match?(%r{\Ahttps?://})
 
+        # Appunì: senza 'o consenso a CC BY 4.0 nun se pò pubblicà niente
+        return [nil, nil, "manca il consenso alla pubblicazione"] unless consent?(get["consent"])
+
         report = { "id" => id, "date" => date.iso8601, "city" => city, "pizzeria" => pizzeria,
                    "price" => price, "sources" => ["modulo:#{id}"] }
         [report, photo, nil]
@@ -185,6 +188,12 @@ module PriceMonitor
         rescue Date::Error
           nil
         end
+      end
+
+      # 'A casella spuntata esce comme "true", "Sì", "1" o 'o testo d' 'a casella;
+      # vacante, "false", "no" o "0" vonno dicere ca nun ha accettato.
+      def consent?(value)
+        !value.empty? && !%w[false no 0].include?(value.downcase)
       end
 
       # Liegge 'o prezzo: "6,50", "6.5 €", "€ 7" → 6.5, 6.5, 7.0

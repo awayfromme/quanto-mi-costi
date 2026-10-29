@@ -184,7 +184,7 @@ end
 class MargheritaTest < Minitest::Test
   CFG = { "min" => 2, "max" => 25,
           "columns" => { "id" => "ID", "date" => "Data", "city" => "Città", "pizzeria" => "Pizzeria",
-                         "price" => "Prezzo", "photo" => "Foto" } }.freeze
+                         "price" => "Prezzo", "photo" => "Foto", "consent" => "Consenso" } }.freeze
 
   def report(id, city, pizzeria, price, date = "2026-10-10")
     { "id" => id, "date" => date, "city" => city, "pizzeria" => pizzeria, "price" => price,
@@ -220,12 +220,13 @@ class MargheritaTest < Minitest::Test
 
   def test_import_keeps_good_rows_and_explains_rejected_ones
     csv = <<~CSV
-      ID,Data,Città,Pizzeria,Prezzo,Foto
-      r1,12/10/2026,reggio emilia,  Da  Gino ,"6,50 €",https://example.org/f1.jpg
-      r2,2026-10-12,L'aquila,Bella,7,
-      r3,2026-10-12,Roma,Pinsa,99,https://example.org/f3.jpg
-      r4,2026-12-01,Roma,Pinsa,8,https://example.org/f4.jpg
-      r5,2026-10-12,Roma,Pinsa,8,https://example.org/f5.jpg
+      ID,Data,Città,Pizzeria,Prezzo,Foto,Consenso
+      r1,12/10/2026,reggio emilia,  Da  Gino ,"6,50 €",https://example.org/f1.jpg,true
+      r2,2026-10-12,L'aquila,Bella,7,,true
+      r3,2026-10-12,Roma,Pinsa,99,https://example.org/f3.jpg,true
+      r4,2026-12-01,Roma,Pinsa,8,https://example.org/f4.jpg,true
+      r5,2026-10-12,Roma,Pinsa,8,https://example.org/f5.jpg,true
+      r6,2026-10-12,Bari,Enzo,6,https://example.org/f6.jpg,false
     CSV
     result = PriceMonitor::Margherita::Import.new(CFG).call(csv, known_ids: ["r5"], today: Date.new(2026, 10, 29))
 
@@ -233,11 +234,12 @@ class MargheritaTest < Minitest::Test
     assert_equal({ "id" => "r1", "date" => "2026-10-12", "city" => "Reggio Emilia", "pizzeria" => "Da Gino",
                    "price" => 6.5, "sources" => ["modulo:r1"] }, result.reports.first)
     assert_equal "https://example.org/f1.jpg", result.photos["r1"]
-    assert_equal 4, result.rejected.size
+    assert_equal 5, result.rejected.size
     assert_match(/foto/, result.rejected[0])
     assert_match(/fuori range/, result.rejected[1])
     assert_match(/futuro/, result.rejected[2])
     assert_match(/già importata/, result.rejected[3])
+    assert_match(/consenso/, result.rejected[4])
   end
 
   def test_store_refuses_reports_without_source_or_already_approved
@@ -254,7 +256,7 @@ class MargheritaTest < Minitest::Test
   end
 
   def test_city_name_capitalization
-    csv = "ID,Data,Città,Pizzeria,Prezzo,Foto\nx,2026-10-01,l'aquila,P,7,https://e.org/x\n"
+    csv = "ID,Data,Città,Pizzeria,Prezzo,Foto,Consenso\nx,2026-10-01,l'aquila,P,7,https://e.org/x,Sì\n"
     result = PriceMonitor::Margherita::Import.new(CFG).call(csv, today: Date.new(2026, 10, 29))
 
     assert_equal "L'Aquila", result.reports.first["city"]

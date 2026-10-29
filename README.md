@@ -49,7 +49,10 @@ Per le notifiche: `TELEGRAM_BOT_TOKEN` e `TELEGRAM_CHAT_ID`.
 ## Indice Margherita
 
 1. Crea un modulo (Tally o Google Moduli) con le domande **Data**, **Città**,
-   **Pizzeria**, **Prezzo** e **Foto** (caricamento file, obbligatorio).
+   **Pizzeria**, **Prezzo** e **Foto** (caricamento file, obbligatorio), più
+   una casella obbligatoria di consenso: *"Accetto che il prezzo segnalato
+   sia pubblicato con licenza CC BY 4.0. La foto serve solo al controllo e
+   non verrà pubblicata."* Senza consenso i dati non si possono pubblicare.
    Metti il link in `config/margherita.yml` → `form_url`; se i nomi delle
    colonne dell'export sono diversi, aggiornali lì.
 2. Esporta le risposte in CSV e lancia `bin/margherita-import risposte.csv`.
@@ -66,6 +69,18 @@ repo: è pubblico.
 
 `bin/site` genera `_site/index.html`. Il workflow `sito` lo pubblica su
 GitHub Pages a ogni push che tocca dati approvati o sito.
+
+## Licenza
+
+© 2026 Ernesto Razzano.
+
+- **Codice**: [MIT](LICENSE).
+- **Dati** (`data/history.json`, `data/margherita.json` e i valori sul sito):
+  [CC BY 4.0](LICENSE-DATI.md). Puoi riusarli liberamente citando
+  "Fonte: Quanto mi costi".
+- **Marchi e testi di terzi** (snapshot delle pagine prezzi, fixture,
+  articoli citati): restano dei rispettivi titolari, vedi [NOTICE.md](NOTICE.md).
+  Il progetto non è affiliato a Netflix, Spotify o Disney.
 
 ## Da sapere prima di andare in produzione
 
